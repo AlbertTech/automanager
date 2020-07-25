@@ -16,8 +16,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return baseWidget().getBaseWidget(Builder(builder: (BuildContext context) {
-      return Container();
-    }));
+    return myWidgetCreator().getBaseWidget(myWidgetCreator().setLayoutWidget());
   }
 }

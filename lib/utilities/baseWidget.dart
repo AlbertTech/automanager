@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 
-class baseWidget {
+class myWidgetCreator {
+  var sizeOfScreen;
 
   Widget getBaseWidget(Widget widget) {
     return MaterialApp(
-      home: Scaffold(body: Builder(builder: (BuildContext context) {
-        var size = MediaQuery
-            .of(context)
-            .size;
-        return Container(
-          width: size.width, height: size.height, color: Colors.red,
-          child:widget,
-        );
-      })),
-    );
+        home: Scaffold(
+          body: Container(
+              color: Colors.white,
+              child: widget),
+        ));
+  }
+
+  Widget setLayoutWidget() {
+    return Builder(builder: (BuildContext context) {
+      return Container(width: MediaQuery
+          .of(context)
+          .size
+          .width * .5, color: Colors.red,);
+    });
   }
 }
