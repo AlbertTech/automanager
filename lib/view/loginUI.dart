@@ -1,3 +1,4 @@
+import '../utilities/validationUtil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -62,6 +63,10 @@ class LoginUI {
                               offset: Offset(3.5, 4))
                         ]),
                     child: TextFormField(
+                      autovalidate: true,
+                      validator: (value) {
+                      return ValidationUtil.validateEmail(value);
+                      },
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.transparent),
