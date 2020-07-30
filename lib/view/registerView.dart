@@ -1,3 +1,6 @@
+import 'package:automanager/utilities/myClippers.dart';
+import 'package:automanager/utilities/myColors.dart';
+import 'package:automanager/view/registerUI.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
@@ -8,6 +11,17 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return MaterialApp(
+        theme: (ThemeData(brightness: Brightness.light)),
+        home: Scaffold(
+            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomPadding: false,
+            body: RegisterUI(
+                    MyColors().colorDeepOrange,
+                    MyColors().colorLightOrange,
+                    MyColors().colorLightBlueBackground,
+                    MyClippers("RegisterView_1"),
+                    MyClippers("RegisterView_2"))
+                .getRegisterUI()));
   }
 }
