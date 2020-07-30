@@ -1,9 +1,9 @@
 import 'package:automanager/utilities/myClippers.dart';
 import 'package:automanager/utilities/myColors.dart';
 import 'package:automanager/view/loginUI.dart';
+import 'package:automanager/view/registerUI.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -17,6 +17,28 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  FocusNode _focus;
+  bool textOnFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _focus = new FocusNode();
+    textOnFocus = false;
+    _focus.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    debugPrint("Focus: " + _focus.hasFocus.toString());
+  }
+
+  @override
+  void dispose() {
+    _focus.dispose();
+    textOnFocus = false;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,8 +46,13 @@ class _LoginViewState extends State<LoginView> {
         home: Scaffold(
             resizeToAvoidBottomInset: false,
             resizeToAvoidBottomPadding: false,
-            body: LoginUI(MyClippers(), MyColors().colorLightBlueBackground,
-                    MyColors().colorLightorange, MyColors().colorDeepOrange)
+            body: LoginUI(
+                    _focus,
+                    textOnFocus,
+                    MyClippers("LoginView"),
+                    MyColors().colorLightBlueBackground,
+                    MyColors().colorLightOrange,
+                    MyColors().colorDeepOrange)
                 .getLoginUIWidget()));
   }
 }
