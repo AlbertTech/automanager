@@ -17,19 +17,33 @@ class MyClippers extends CustomClipper<Path> {
         break;
 
       case "RegisterView_1":
-        path.lineTo(size.width*.5, 0);
-        path.quadraticBezierTo(size.width*.485, size.height*.05, size.width*.25, size.height*.1);
-        path.quadraticBezierTo(size.width*.2, size.height*.17, 0, size.height*.18);
+        path.lineTo(size.width * .5, 0);
+        path.quadraticBezierTo(size.width * .485, size.height * .05,
+            size.width * .25, size.height * .1);
+        path.quadraticBezierTo(
+            size.width * .2, size.height * .17, 0, size.height * .18);
         break;
 
       case "RegisterView_2":
-        path.lineTo(size.width*.5, size.height);
+        path.lineTo(size.width * .5, size.height);
+        path.quadraticBezierTo(size.width * .5, size.height * .95,
+            size.width * .75, size.height * .925);
         path.quadraticBezierTo(
-            size.width * .5, size.height * .95, size.width*.75, size.height*.925);
-        path.quadraticBezierTo(
-            size.width *.8, size.height * .85, size.width, size.height*.84);
+            size.width * .8, size.height * .85, size.width, size.height * .84);
         path.lineTo(size.width, size.height);
-        path.lineTo(size.width*.5, size.height);
+        path.lineTo(size.width * .5, size.height);
+        break;
+
+      case "HomeView_1":
+        path.lineTo(size.width * .35, 0);
+        path.quadraticBezierTo(size.width * .35, (size.height * .35)*.55,
+            0, size.height * .35);
+        break;
+
+      case "HomeView_2":
+        path.lineTo(0, size.height*.05);
+        path.quadraticBezierTo(size.width * .25, (size.height * .6)*.5,
+            0, size.height * .6);
         break;
 
       default:

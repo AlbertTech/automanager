@@ -49,6 +49,13 @@ flutter:
   assets:
     - assets/images/image_pushing_cart.png
     - assets/images/image_investment_register.png
+
+    - assets/images/image_add_stock.png
+    - assets/images/image_make_sale.png
+    - assets/images/image_update_stock.png
+    - assets/images/image_view_sales.png
+    - assets/images/image_view_storage.png
+    - assets/images/image_view_roles.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
