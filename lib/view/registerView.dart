@@ -1,5 +1,5 @@
-import 'package:automanager/utilities/myClippers.dart';
-import 'package:automanager/utilities/myColors.dart';
+import 'file:///D:/Programming/Flutter_Projects/automanager/lib/resources/myClippers.dart';
+import 'package:automanager/resources/myColors.dart';
 import 'package:automanager/view/registerUI.dart';
 import 'package:flutter/material.dart';
 

@@ -34,15 +34,14 @@ class HomeUI {
               clipper: myClipper_2,
             ),*/
             Container(
-              width: mediaSize.width * .8,
+              width: mediaSize.width * .9,
               height: mediaSize.height * .9,
               margin: EdgeInsets.symmetric(
                   vertical: mediaSize.height * .05,
-                  horizontal: mediaSize.width * .1),
+                  horizontal: mediaSize.width * .05),
               color: Colors.transparent,
               child: Column(
                 children: <Widget>[
-
                   Text(
                     "My Database",
                     style: TextStyle(
@@ -50,15 +49,18 @@ class HomeUI {
                         fontWeight: FontWeight.bold,
                         color: Colors.black87),
                   ),
-                  GridView.builder(
+                  Expanded(
+                    child: GridView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
                     itemCount: _listItem.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 15,
-                        mainAxisSpacing: 15),
-                    shrinkWrap: true,
+                        mainAxisSpacing: 15,),
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
+                        width: mediaSize.width*.1,
                         decoration: BoxDecoration(
                           color: myColorLightOrange,
                           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -83,10 +85,10 @@ class HomeUI {
                             )),
                       );
                     },
-                  )
+                  ),),
                 ],
               ),
-            )
+            ),
           ],
         ),
       );

@@ -1,4 +1,4 @@
-import 'package:automanager/resources/MessagesEN.dart';
+import 'file:///D:/Programming/Flutter_Projects/automanager/lib/utilities/MessagesEN.dart';
 
 class ValidationUtil{
   static bool isNotEmpty(String str){
