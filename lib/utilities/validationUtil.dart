@@ -1,3 +1,5 @@
+import 'package:automanager/resources/MessagesEN.dart';
+
 class ValidationUtil{
   static bool isNotEmpty(String str){
     if(str != null &&
@@ -17,10 +19,10 @@ class ValidationUtil{
 
   static String validateEmail(String email){
     if(!isNotEmpty(email)){
-      return "This cannot be empty.";
+      return MessagesEN.fieldCantBeEmpty;
     }
     if(!isValidEmailFormat(email)){
-      return "Invalid email address format.";
+      return MessagesEN.invalidEmailFormat;
     }
     return "";
   }
