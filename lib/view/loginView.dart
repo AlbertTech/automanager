@@ -47,13 +47,17 @@ class _LoginViewState extends State<LoginView> {
         home: Scaffold(
             resizeToAvoidBottomInset: false,
             resizeToAvoidBottomPadding: false,
-            body: LoginUI(
-                _focus,
-                textOnFocus,
-                MyClippers("LoginView"),
-                MyColors().colorLightBlueBackground,
+            body: HomeUI([
+              'assets/images/image_add_stock.png',
+              'assets/images/image_make_sale.png',
+              'assets/images/image_update_stock.png',
+              'assets/images/image_view_sales.png',
+              'assets/images/image_view_storage.png',
+              'assets/images/image_view_roles.png',
+            ], MyColors().colorLightBlueBackground,
                 MyColors().colorLightOrange,
-                MyColors().colorDeepOrange)
-                .getLoginUIWidget()));
+                MyClippers("HomeView_1"),
+                MyClippers("HomeView_2"))
+                .getHomeUI()));
   }
 }

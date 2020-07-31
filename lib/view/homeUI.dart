@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class HomeUI {
-  HomeUI(this._listItem, this.myLightBlueColor, this.myClipper_1,
-      this.myClipper_2);
+  HomeUI(this._listItem, this.myLightBlueColor, this.myColorLightOrange,
+      this.myClipper_1, this.myClipper_2);
 
   final Color myLightBlueColor;
+  final Color myColorLightOrange;
   final CustomClipper myClipper_1;
   final CustomClipper myClipper_2;
   final List<String> _listItem;
@@ -41,28 +42,47 @@ class HomeUI {
               color: Colors.transparent,
               child: Column(
                 children: <Widget>[
-                  Text("My Database"),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      padding: EdgeInsets.all(10),
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                      children: _listItem
-                          .map((item) => Container(
-                              color: Colors.orange,
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                      child: Image.asset(
-                                    item,
-                                    fit: BoxFit.fill,
-                                  )),
-                                  Text("dsa")
-                                ],
-                              )))
-                          .toList(),
-                    ),
+
+                  Text(
+                    "My Database",
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87),
+                  ),
+                  GridView.builder(
+                    itemCount: _listItem.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15),
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: myColorLightOrange,
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          /*boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.black54.withOpacity(0.45),
+                                    spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(3.5, 4))
+                              ]*/
+                        ),
+                        child: GridTile(
+                            footer: Text(
+                              'placeholder',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 19, fontWeight: FontWeight.bold),
+                            ),
+                            child: Image.asset(
+                              _listItem[index],
+                              filterQuality: FilterQuality.high,
+                            )),
+                      );
+                    },
                   )
                 ],
               ),
