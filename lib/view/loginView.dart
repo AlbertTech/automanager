@@ -1,6 +1,6 @@
 import 'package:automanager/utilities/myClippers.dart';
 import 'package:automanager/utilities/myColors.dart';
-import 'package:automanager/view/HomeUI.dart';
+import 'package:automanager/view/homeUI.dart';
 import 'package:automanager/view/loginUI.dart';
 import 'package:automanager/view/registerUI.dart';
 import 'package:flutter/material.dart';
@@ -47,15 +47,13 @@ class _LoginViewState extends State<LoginView> {
         home: Scaffold(
             resizeToAvoidBottomInset: false,
             resizeToAvoidBottomPadding: false,
-            body: HomeUI([
-              'assets/images/image_add_stock.png',
-              'assets/images/image_make_sale.png',
-              'assets/images/image_update_stock.png',
-              'assets/images/image_view_sales.png',
-              'assets/images/image_view_storage.png',
-              'assets/images/image_view_roles.png',
-            ], MyColors().colorLightBlueBackground, MyClippers("HomeView_1"),
-                    MyClippers("HomeView_2"))
-                .getHomeUI()));
+            body: LoginUI(
+                _focus,
+                textOnFocus,
+                MyClippers("LoginView"),
+                MyColors().colorLightBlueBackground,
+                MyColors().colorLightOrange,
+                MyColors().colorDeepOrange)
+                .getLoginUIWidget()));
   }
 }
