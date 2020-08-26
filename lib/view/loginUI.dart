@@ -1,14 +1,16 @@
+import 'package:automanager/utilities/textUtilities.dart';
 import 'package:automanager/utilities/validationUtil.dart';
+import 'package:automanager/view/homeView.dart';
+import 'package:automanager/view/registerView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class LoginUI {
-  LoginUI(this.myTextFocus, this.textOnFocus, this.myClipper, this.myBGClipperColor,
+  LoginUI(this.myTextUtility, this.myClipper, this.myBGClipperColor,
       this.myColorLightOrange, this.myColorDeepOrange);
 
-  final FocusNode myTextFocus;
-        bool textOnFocus;
+  final TextUtilities myTextUtility;
   final Color myBGClipperColor;
   final Color myColorLightOrange;
   final Color myColorDeepOrange;
@@ -20,8 +22,12 @@ class LoginUI {
   Widget getLoginUIWidget() {
     return Builder(builder: (BuildContext context) {
       final mediaSize = MediaQuery.of(context).size;
-
-        return Container(
+      return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          myTextUtility.textFocus = false;
+        },
+        child: Container(
           width: mediaSize.width,
           height: mediaSize.height,
           color: Colors.white,
@@ -30,11 +36,8 @@ class LoginUI {
               Container(
                 width: mediaSize.width * .8,
                 height: mediaSize.height * .8,
-                margin: EdgeInsets.fromLTRB(
-                    mediaSize.width * .1,
-                    mediaSize.height * .23,
-                    mediaSize.width * .1,
-                    mediaSize.height * .1),
+                margin: myTextUtility.getMarginEdgeInsetRegardTextFocus(
+                    mediaSize, "LoginView"),
                 color: Colors.transparent,
                 child: Column(
                   children: <Widget>[
@@ -46,53 +49,16 @@ class LoginUI {
                           'assets/images/image_pushing_cart.png',
                           fit: BoxFit.fill,
                         )),
-                    Container(
-                      height: mediaSize.height * .06,
-                      decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.all(Radius.circular(12.5)),
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                                color: Colors.black54.withOpacity(0.45),
-                                spreadRadius: 1,
-                                blurRadius: 4,
-                                offset: Offset(3.5, 4))
-                          ]),
-                      child: TextFormField(
-                        autovalidate: true,
-                        validator: (value) {
-                          return ValidationUtil.validateEmail(value);
-                        },
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12.5))),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12.5))),
-                            hintStyle: TextStyle(color: Colors.black87),
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: Colors.black54,
-                            ),
-                            labelText: "Email",
-                            filled: true,
-                            fillColor: myColorLightOrange),
-                        keyboardType: TextInputType.emailAddress,
-                        focusNode: myTextFocus,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ),
-                    ),
-                    Spacer(flex: 2),
-                    Container(
+                    GestureDetector(
+                      onDoubleTap: () {
+                        FocusScope.of(context).unfocus();
+                        myTextUtility.textFocus = false;
+                      },
+                      child: Container(
                         height: mediaSize.height * .06,
                         decoration: BoxDecoration(
                             color: Colors.transparent,
-                            borderRadius: BorderRadius.all(Radius.circular(12.5)),
+                            borderRadius: BorderRadius.all(Radius.circular(13)),
                             boxShadow: <BoxShadow>[
                               BoxShadow(
                                   color: Colors.black54.withOpacity(0.45),
@@ -101,34 +67,102 @@ class LoginUI {
                                   offset: Offset(3.5, 4))
                             ]),
                         child: TextFormField(
+                          onFieldSubmitted: (String value) {
+                            myTextUtility.textFocus = false;
+                          },
+                          onTap: () {
+                            myTextUtility.textFocus = true;
+                          },
+                          /*autovalidate: true,
+                        validator: (value) {
+                          return ValidationUtil.validateEmail(value);
+                        },*/
                           decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(0),
                               focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.transparent),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12.5))),
+                                      BorderRadius.all(Radius.circular(13))),
                               enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.transparent),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(12.5))),
+                                      BorderRadius.all(Radius.circular(13))),
+                              hintStyle: TextStyle(color: Colors.black87),
                               prefixIcon: Icon(
-                                Icons.enhanced_encryption,
+                                Icons.email,
                                 color: Colors.black54,
                               ),
-                              labelText: "password",
+                              labelText: "Email",
                               filled: true,
                               fillColor: myColorLightOrange),
-                          obscureText: true,
-                          keyboardType: TextInputType.visiblePassword,
+                          keyboardType: TextInputType.emailAddress,
                           style: TextStyle(color: Colors.black, fontSize: 20),
-                        )),
+                        ),
+                      ),
+                    ),
+                    Spacer(flex: 2),
+                    GestureDetector(
+                      onDoubleTap: () {
+                        FocusScope.of(context).unfocus();
+                        myTextUtility.textFocus = false;
+                      },
+                      child: Container(
+                          height: mediaSize.height * .06,
+                          decoration: BoxDecoration(
+                              color: Colors.transparent,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(13)),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: Colors.black54.withOpacity(0.45),
+                                    spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(3.5, 4))
+                              ]),
+                          child: TextFormField(
+                            onFieldSubmitted: (String value) {
+                              myTextUtility.textFocus = false;
+                            },
+                            onTap: () {
+                            },
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(0),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(13))),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(13))),
+                                prefixIcon: Icon(
+                                  Icons.enhanced_encryption,
+                                  color: Colors.black54,
+                                ),
+                                labelText: "password",
+                                filled: true,
+                                fillColor: myColorLightOrange),
+                            obscureText: true,
+                            keyboardType: TextInputType.visiblePassword,
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          )),
+                    ),
                     Spacer(flex: 2),
                     //login Sign-up
                     Row(
                       children: <Widget>[
                         GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          HomeView()));
+                            },
                             child: new Container(
                                 constraints: BoxConstraints(
                                     maxWidth: mediaSize.width * .45,
@@ -136,7 +170,7 @@ class LoginUI {
                                 decoration: BoxDecoration(
                                     color: myColorDeepOrange,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(12.5)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
                                           color:
@@ -161,7 +195,11 @@ class LoginUI {
                         Spacer(),
                         GestureDetector(
                             onTap: () {
-                              print("Container clicked");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          RegisterView()));
                             },
                             child: Container(
                                 constraints: BoxConstraints(
@@ -170,7 +208,7 @@ class LoginUI {
                                 decoration: BoxDecoration(
                                     color: myColorDeepOrange,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(12.5)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
                                           color:
@@ -184,7 +222,6 @@ class LoginUI {
                                   child: AutoSizeText(
                                     'Sign up',
                                     style: TextStyle(
-                                        fontSize: 20,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                     maxFontSize: 23,
@@ -246,10 +283,10 @@ class LoginUI {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ))),
-                          Text("   "),
+                          Text("\t\t\t"),
                           GestureDetector(
                               onTap: () {
-                                print("Container clicked");
+                                print("google login");
                               },
                               child: new Container(
                                   constraints: BoxConstraints(
@@ -296,9 +333,8 @@ class LoginUI {
                       fontWeight: FontWeight.bold)),
             ],
           ),
-        );
-
-
+        ),
+      );
     });
   }
 }

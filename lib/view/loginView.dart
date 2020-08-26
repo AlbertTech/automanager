@@ -1,8 +1,15 @@
-import 'file:///D:/Programming/Flutter_Projects/automanager/lib/resources/myClippers.dart';
+import 'package:automanager/resources/myClippers.dart';
 import 'package:automanager/resources/myColors.dart';
+import 'package:automanager/utilities/textUtilities.dart';
+import 'package:automanager/view/AddStockUI.dart';
+import 'package:automanager/view/InventoryUI.dart';
 import 'package:automanager/view/homeUI.dart';
+import 'package:automanager/view/itemDisplayUI.dart';
 import 'package:automanager/view/loginUI.dart';
+import 'package:automanager/view/makeSaleUI.dart';
 import 'package:automanager/view/registerUI.dart';
+import 'package:automanager/view/rolesUI.dart';
+import 'package:automanager/view/salesReportUI.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -18,27 +25,15 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  FocusNode _focus;
-  bool textOnFocus;
-
   @override
   void initState() {
     super.initState();
-    _focus = new FocusNode();
-    textOnFocus = false;
-    _focus.addListener(_onFocusChange);
   }
-
-  void _onFocusChange() {
-    debugPrint("Focus: " + _focus.hasFocus.toString());
-  }
-
   @override
   void dispose() {
-    _focus.dispose();
-    textOnFocus = false;
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +42,12 @@ class _LoginViewState extends State<LoginView> {
         home: Scaffold(
             resizeToAvoidBottomInset: false,
             resizeToAvoidBottomPadding: false,
-            body: HomeUI([
-              'assets/images/image_add_stock.png',
-              'assets/images/image_make_sale.png',
-              'assets/images/image_update_stock.png',
-              'assets/images/image_view_sales.png',
-              'assets/images/image_view_storage.png',
-              'assets/images/image_view_roles.png',
-            ], MyColors().colorLightBlueBackground, MyColors().colorLightOrange,
-                    MyClippers("HomeView_1"), MyClippers("HomeView_2"))
-                .getHomeUI()));
+            body: LoginUI(
+                    TextUtilities(),
+                    MyClippers("LoginView"),
+                    MyColors().colorLightBlue,
+                    MyColors().colorLightOrange,
+                    MyColors().colorDeepOrange)
+                .getLoginUIWidget(),));
   }
 }

@@ -36,16 +36,55 @@ class MyClippers extends CustomClipper<Path> {
 
       case "HomeView_1":
         path.lineTo(size.width * .35, 0);
-        path.quadraticBezierTo(size.width * .35, (size.height * .35)*.55,
-            0, size.height * .35);
+        path.quadraticBezierTo(
+            size.width * .35, (size.height * .35) * .55, 0, size.height * .35);
         break;
 
       case "HomeView_2":
-        path.lineTo(0, size.height*.05);
-        path.quadraticBezierTo(size.width * .25, (size.height * .6)*.5,
-            0, size.height * .6);
+        path.lineTo(0, size.height * .05);
+        path.quadraticBezierTo(
+            size.width * .25, (size.height * .6) * .5, 0, size.height * .6);
         break;
 
+      case "AddStockView":
+        path.lineTo(0, size.height * .2);
+        path.quadraticBezierTo(size.width * .1, size.height * .35,
+            size.width * .45, size.height * .35);
+        path.quadraticBezierTo(
+            size.width, size.height * .35, size.width, size.height * .4);
+        path.lineTo(size.width, size.height);
+        path.lineTo(0, size.height);
+        path.close();
+        break;
+
+      case "MakeSaleView":
+        path.lineTo(0, size.height*.7);
+        path.quadraticBezierTo(size.width*.5, size.height*.625, size.width, size.height*.7);
+        path.lineTo(size.width, size.height);
+        path.lineTo(0, size.height);
+        path.close();
+        break;
+
+
+      case "SalesReportView":
+        path.lineTo(size.width * .5, 0);
+        path.lineTo(0, size.height * .17);
+        break;
+
+      case "RolesView_1":
+        path.lineTo(0, size.height * .7);
+        path.quadraticBezierTo(
+            size.width * .55, size.height * .7, size.width * .55, size.height);
+        path.lineTo(0, size.height);
+        path.lineTo(0, size.height * .7);
+        break;
+
+      case "RolesView_2":
+        path.lineTo(size.width * .7, 0);
+        path.quadraticBezierTo(
+            size.width * .75, size.height * .15, size.width, size.height * .2);
+        path.lineTo(size.width, 0);
+        break;
       default:
         break;
     }
