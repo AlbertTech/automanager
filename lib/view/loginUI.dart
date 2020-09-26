@@ -1,23 +1,33 @@
-import 'package:automanager/utilities/textUtilities.dart';
-import 'package:automanager/utilities/validationUtil.dart';
-import 'package:automanager/view/homeView.dart';
+import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/utilities/myNavigatorUtil.dart';
+import 'package:automanager/utilities/textFieldFocusUtilities.dart';
 import 'package:automanager/view/registerView.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:automanager/view_models/loginViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
 class LoginUI {
-  LoginUI(this.myTextUtility, this.myClipper, this.myBGClipperColor,
-      this.myColorLightOrange, this.myColorDeepOrange);
+  LoginUI(
+      this.sharedPrefUtil,
+      this.loginViewModel,
+      this.myTextUtility,
+      this.myNavigatorUtil,
+      this.myClipper,
+      this.myBGClipperColor,
+      this.myColorLightOrange,
+      this.myColorDeepOrange,
+      this.txtEmail,
+      this.txtPass);
 
-  final TextUtilities myTextUtility;
+  final SharedPrefUtil sharedPrefUtil;
+  final LoginViewModel loginViewModel;
+  final TextFieldFocusUtilities myTextUtility;
+  final MyNavigatorUtil myNavigatorUtil;
+  final CustomClipper myClipper;
   final Color myBGClipperColor;
   final Color myColorLightOrange;
   final Color myColorDeepOrange;
-  final CustomClipper myClipper;
-
-  String emailText;
-  String passwordText;
+  final TextEditingController txtEmail;
+  final TextEditingController txtPass;
 
   Widget getLoginUIWidget() {
     return Builder(builder: (BuildContext context) {
@@ -67,6 +77,7 @@ class LoginUI {
                                   offset: Offset(3.5, 4))
                             ]),
                         child: TextFormField(
+                          controller: txtEmail,
                           onFieldSubmitted: (String value) {
                             myTextUtility.textFocus = false;
                           },
@@ -122,10 +133,12 @@ class LoginUI {
                                     offset: Offset(3.5, 4))
                               ]),
                           child: TextFormField(
+                            controller: txtPass,
                             onFieldSubmitted: (String value) {
                               myTextUtility.textFocus = false;
                             },
                             onTap: () {
+                              myTextUtility.textFocus = true;
                             },
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.all(0),
@@ -156,12 +169,18 @@ class LoginUI {
                     Row(
                       children: <Widget>[
                         GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          HomeView()));
+                            onTap: () async {
+                              await loginViewModel
+                                  .loginWithEmailPassword(
+                                      txtEmail.text, txtPass.text, context)
+                                  .then((value) async {
+                                await sharedPrefUtil.setCurrentUser(
+                                    loginViewModel.myUserId.toString(),
+                                    loginViewModel.isLoggedIn);
+                                await myNavigatorUtil.navigateNewPage(context);
+                              }).catchError((onError) {
+                                print("onerror : " + onError.toString());
+                              });
                             },
                             child: new Container(
                                 constraints: BoxConstraints(
@@ -254,8 +273,17 @@ class LoginUI {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           GestureDetector(
-                              onTap: () {
-                                print("Container clicked - fb");
+                              onTap: () async {
+                                print("Container clicked - facebook");
+                                await loginViewModel
+                                    .loginWithFacebook(context)
+                                    .then((value) async {
+                                  await sharedPrefUtil.setCurrentUser(
+                                      loginViewModel.myUserId.toString(),
+                                      loginViewModel.isLoggedIn);
+                                  await myNavigatorUtil
+                                      .navigateNewPage(context);
+                                });
                               },
                               child: new Container(
                                   constraints: BoxConstraints(
@@ -285,8 +313,13 @@ class LoginUI {
                                   ))),
                           Text("\t\t\t"),
                           GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 print("google login");
+                                await loginViewModel
+                                    .loginWithGoogle(context)
+                                    .catchError((onError) {
+                                  print("error here: " + onError.toString());
+                                });
                               },
                               child: new Container(
                                   constraints: BoxConstraints(

@@ -16,14 +16,21 @@ class WidgetForFab {
         onTap: () {
           switch (viewState) {
             case "MakeSaleView":
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) => MakeSaleReceiptView()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) =>
+                          MakeSaleReceiptView()));
               break;
 
             case "MakeSaleReceiptView":
               print("do databsae action -saleviewreceipt");
               Navigator.pop(context);
               Navigator.pop(context);
+              break;
+
+            case "AddStockView":
+              print("do databsae action -addstock");
               break;
 
             default:

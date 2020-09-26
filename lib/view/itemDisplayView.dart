@@ -1,6 +1,5 @@
-import 'package:automanager/resources/myClippers.dart';
 import 'package:automanager/resources/myColors.dart';
-import 'package:automanager/utilities/shadowClipper.dart';
+
 import 'package:automanager/utilities/widgetForFab.dart';
 import 'package:automanager/view/itemDisplayUI.dart';
 import 'package:flutter/material.dart';

@@ -1,10 +1,7 @@
-import 'package:automanager/resources/myClippers.dart';
+
 import 'package:automanager/resources/myColors.dart';
-import 'package:automanager/utilities/shadowClipper.dart';
 import 'package:automanager/utilities/widgetForFab.dart';
-import 'package:automanager/view/homeUI.dart';
 import 'package:automanager/view/makeSaleReceiptUI.dart';
-import 'package:automanager/view/makeSaleUI.dart';
 import 'package:flutter/material.dart';
 
 class MakeSaleReceiptView extends StatefulWidget {

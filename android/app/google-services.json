@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "206715481596",
+    "firebase_url": "https://automanager-cb61f.firebaseio.com",
+    "project_id": "automanager-cb61f",
+    "storage_bucket": "automanager-cb61f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206715481596:android:973e9fc445d75c1decd679",
+        "android_client_info": {
+          "package_name": "com.kislap.automanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206715481596-gg4p8eh4j96ip7etgb50n5dv5q6nchj6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kislap.automanager",
+            "certificate_hash": "9f69f9b6a986d7cc5d6d5547a57bd87ee8bd06e1"
+          }
+        },
+        {
+          "client_id": "206715481596-slopt0q1es8a7hqudeta2emp66edp5r7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUjI5boRUOa0-9dR56f3c6vjIOsT20aNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206715481596-slopt0q1es8a7hqudeta2emp66edp5r7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

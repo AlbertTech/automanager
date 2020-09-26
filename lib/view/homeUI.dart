@@ -4,6 +4,8 @@ import 'package:automanager/view/itemDisplayView.dart';
 import 'package:automanager/view/makeSaleView.dart';
 import 'package:automanager/view/rolesView.dart';
 import 'package:automanager/view/salesReportView.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class HomeUI {
@@ -16,7 +18,7 @@ class HomeUI {
   final CustomClipper myClipper_1;
   final CustomClipper myClipper_2;
   final List<String> _listItem;
-
+  FirebaseAuth firebaseAuth;
   Widget getHomeUI() {
     final mediaSize = MediaQuery.of(context).size;
     return Container(

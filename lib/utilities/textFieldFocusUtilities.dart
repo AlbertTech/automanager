@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 
-class TextUtilities {
+class TextFieldFocusUtilities {
   bool _textFocus = false;
 
   bool get textFocus => _textFocus;
 
   void set textFocus(bool value) {
     _textFocus = value;
-  }
-
-  bool _keyboardOpen = false;
-  void disposeAllValues(){
-    _textFocus = false;
-    _keyboardOpen = false;
   }
   EdgeInsets getMarginEdgeInsetRegardTextFocus(Size mediaSize, String viewState) {
     switch (viewState) {
@@ -45,6 +39,21 @@ class TextUtilities {
               mediaSize.height * .0,
               mediaSize.width * .1,
               mediaSize.height * .35);
+        }
+        break;
+      case "AddStockView":
+        if (_textFocus == false) {
+          return EdgeInsets.only(
+              left: mediaSize.width * .1,
+              right: mediaSize.width * .1,
+              top: mediaSize.height * .423,
+              bottom: mediaSize.height * .075);
+        } else {
+          return EdgeInsets.only(
+              left: mediaSize.width * .1,
+              right: mediaSize.width * .1,
+              top: mediaSize.height * .325,
+              bottom: mediaSize.height * .075);
         }
         break;
       default:
