@@ -11,4 +11,13 @@ class MyDatabaseTags{
   final String myStockBoughtFrom = "Distributor";
   final String myStockOrderedDate = "Order_date";
   final String myStockDateArrival = "Order_arrival";
+
+
+  final String myDatabaseNameTag = "Database_name";
+  final String myDatabaseOwnerUidTag = "Owner_uid";
+
+
+  final String myDatabasePersonnelTag = "Personnel";
+  final String myDatabasePersonnelIdTag = "Personnel_id";
+  final String myDatabasePersonnelNameTag = "Personnel_name";
 }

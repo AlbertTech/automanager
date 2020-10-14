@@ -8,7 +8,8 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 class MakeSaleUI {
   MakeSaleUI(
       this.context,
-      this.callBack,
+      this.updateMyMaps,
+      this.updateMySelectedItem,
       this.makeSaleViewModel,
       this.myClipPathShadowed,
       this.myLightOrangeColor,
@@ -16,11 +17,13 @@ class MakeSaleUI {
       this.txtMySearchBar,
       this.mySuggestions,
       this.myNewSuggestion,
+      this.mySelectedItemValues,
       this.myFocus,
       this.isRefreshed);
 
   final Widget myClipPathShadowed;
-  final Function callBack;
+  final Function updateMyMaps;
+  final Function updateMySelectedItem;
   final BuildContext context;
   final MakeSaleViewModel makeSaleViewModel;
   final Color myLightOrangeColor;
@@ -29,17 +32,16 @@ class MakeSaleUI {
   final TextEditingController txtMySearchBar;
   final Map<String, String> mySuggestions;
   final List<String> myNewSuggestion;
+  final List<String> mySelectedItemValues;
   final FocusNode myFocus;
   bool isRefreshed;
 
   Widget getMakeSaleUI() {
-    final mediaSize = MediaQuery.of(context).size;
-    print("my suggestions all: "+mySuggestions.values.toList().toString());
     requestFocusIfRefreshed();
+    final mediaSize = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
-        isRefreshed = false;
-        FocusScope.of(context).unfocus();
+        tapOutsideOfFocus();
       },
       child: Container(
         width: mediaSize.width,
@@ -112,9 +114,9 @@ class MakeSaleUI {
                                         child: Text(item),
                                       );
                                     },
-                                    textChanged:
-                                        (String txtSearchValue) async =>
-                                            await findMyItemSuggestions(),
+                                    textChanged: (String txtSearchValue) async {
+                                      await findMyItemSuggestions();
+                                    },
                                     focusNode: myFocus,
                                     suggestions: myNewSuggestion,
                                     controller: txtMySearchBar,
@@ -156,7 +158,10 @@ class MakeSaleUI {
                         children: <Widget>[
                           Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Apples"),
+                            child: Text((mySelectedItemValues.length > 0
+                                ? (mySelectedItemValues[
+                                    makeSaleViewModel.myListIndexStockName])
+                                : "Choose an item")),
                           ),
                           /*Image.asset(
                           "assets/images/image_add_stock.png",
@@ -192,22 +197,33 @@ class MakeSaleUI {
                                   alignment: Alignment.centerLeft,
                                 ),
                                 Container(
-                                  constraints: BoxConstraints(
-                                      maxHeight: mediaSize.height * .05,
-                                      maxWidth: mediaSize.width * .365),
-                                  decoration: BoxDecoration(
-                                      boxShadow: <BoxShadow>[
-                                        BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.18),
-                                            spreadRadius: 1,
-                                            blurRadius: 6,
-                                            offset: Offset(0, 3))
-                                      ],
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                ),
+                                    height: mediaSize.height * .05,
+                                    width: mediaSize.width * 365,
+                                    decoration: BoxDecoration(
+                                        boxShadow: <BoxShadow>[
+                                          BoxShadow(
+                                              color: Colors.black
+                                                  .withOpacity(0.18),
+                                              spreadRadius: 1,
+                                              blurRadius: 6,
+                                              offset: Offset(0, 3))
+                                        ],
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Align(
+                                      child: Text(
+                                          "\t\t" +
+                                              (mySelectedItemValues.length > 0
+                                                  ? (mySelectedItemValues[
+                                                      makeSaleViewModel
+                                                          .myListIndexStockCategory])
+                                                  : ""),
+                                          style: (TextStyle(
+                                            color: Colors.black,
+                                          ))),
+                                      alignment: Alignment.centerLeft,
+                                    )),
                                 Spacer(),
                                 Align(
                                   child: AutoSizeText(
@@ -236,6 +252,19 @@ class MakeSaleUI {
                                       color: Colors.white,
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10))),
+                                  child: Align(
+                                    child: Text(
+                                        "\t\t" +
+                                            (mySelectedItemValues.length > 0
+                                                ? (mySelectedItemValues[
+                                                    makeSaleViewModel
+                                                        .myListIndexStockQuantity])
+                                                : ""),
+                                        style: (TextStyle(
+                                          color: Colors.black,
+                                        ))),
+                                    alignment: Alignment.centerLeft,
+                                  ),
                                 ),
                                 Spacer(),
                                 Align(
@@ -265,6 +294,19 @@ class MakeSaleUI {
                                       color: Colors.white,
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(10))),
+                                  child: Align(
+                                    child: Text(
+                                        "\t\t" +
+                                            (mySelectedItemValues.length > 0
+                                                ? (mySelectedItemValues[
+                                                    makeSaleViewModel
+                                                        .myListIndexStockPriceEach])
+                                                : ""),
+                                        style: (TextStyle(
+                                          color: Colors.black,
+                                        ))),
+                                    alignment: Alignment.centerLeft,
+                                  ),
                                 )
                               ],
                             ),
@@ -306,8 +348,8 @@ class MakeSaleUI {
 
   Future<void> findMyItemSuggestions() async {
     await makeSaleViewModel
-        .searchMyItems(this.txtMySearchBar.text, this.context, this.callBack,
-            this.mySuggestions, this.myNewSuggestion)
+        .searchMyItems(this.txtMySearchBar.text, this.context,
+            this.updateMyMaps, this.mySuggestions, this.myNewSuggestion)
         .then((value) {
       isRefreshed = true;
     });
@@ -315,7 +357,8 @@ class MakeSaleUI {
 
   Future<void> itemSelected(String mySelectedText) async {
     await makeSaleViewModel
-        .anItemSelected(mySelectedText, txtMySearchBar, this.context)
+        .anItemSelected(mySelectedText, txtMySearchBar,
+            this.updateMySelectedItem, this.mySelectedItemValues, this.context)
         .then((value) {
       isRefreshed = false;
     });
@@ -325,5 +368,10 @@ class MakeSaleUI {
     if (isRefreshed == true) {
       myFocus.requestFocus();
     }
+  }
+
+  void tapOutsideOfFocus() {
+    isRefreshed = false;
+    FocusScope.of(context).unfocus();
   }
 }

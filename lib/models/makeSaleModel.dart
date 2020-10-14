@@ -1,7 +1,7 @@
 import 'package:automanager/models/sharedPrefUtil.dart';
 import 'package:automanager/resources/myDatabaseTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'dart:async';
 class MakeSaleModel {
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final MyDatabaseTags myDatabaseTags = new MyDatabaseTags();
@@ -16,14 +16,19 @@ class MakeSaleModel {
   int myCurrentPriceEach = 0;
   String myImagePath = "";
 
+  String myCurrentSelectedStockId,
+      myCurrentSelectedStockName,
+      myCurrentSelectedStockCategory,
+      myCurrentSelectedQuantity,
+      myCurrentSelectedPriceEach,
+      myCurrentSelectedImageFile;
+
   Future<void> findMySuggestions(String mySearchBar) async {
-    mySuggestions.clear();
-    myCategoriesOfSuggestions.clear();
     await sharedPrefUtil.getIsCurrentUserLoggedIn().then((value) async {
       if (value == true) {
         await firebaseFirestore
             .collection(myDatabaseTags.allDatabaseTag)
-            .doc("H2Rx5qFb3bfMxb6oA7ax")
+            .doc("J82BQucjHo0amaOm5Waz")
             .collection(myDatabaseTags.myDatabaseInventoryTag)
             .get()
             .then((myCategories) async {
@@ -35,7 +40,7 @@ class MakeSaleModel {
             } else {
               await firebaseFirestore
                   .collection(myDatabaseTags.allDatabaseTag)
-                  .doc("H2Rx5qFb3bfMxb6oA7ax")
+                  .doc("J82BQucjHo0amaOm5Waz")
                   .collection(myDatabaseTags.myDatabaseInventoryTag)
                   .doc(myCategories.docs.toList()[indexCategory].id)
                   .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
@@ -51,13 +56,15 @@ class MakeSaleModel {
                     indexSnapShot++) {
                   print("my snapshot: " +
                       snapshot.docs[indexSnapShot]
-                          .get("Stock_name")
+                          .get(myDatabaseTags.myStockNameTag)
                           .toString()
                           .toLowerCase());
                   if (snapshot.docs[indexSnapShot]
-                      .get("Stock_name")
+                      .get(myDatabaseTags.myStockNameTag)
                       .toLowerCase()
                       .contains(mySearchBar.toLowerCase())) {
+                    mySuggestions.clear();
+                    myCategoriesOfSuggestions.clear();
                     print("item found consistory: " +
                         snapshot.docs[indexSnapShot].get("Stock_name"));
                     mySuggestions.addAll({
@@ -84,23 +91,31 @@ class MakeSaleModel {
     });
   }
 
-  Future<void> displayItemOnSelection(
+  Future<List<String>> displayItemOnSelection(
       String categoryId, String stockId) async {
+    List<String> myList;
     await firebaseFirestore
-      ..collection(myDatabaseTags.allDatabaseTag)
-          .doc("H2Rx5qFb3bfMxb6oA7ax")
-          .collection(myDatabaseTags.myDatabaseInventoryTag)
-          .doc(categoryId)
-          .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
-          .doc(stockId)
-          .get()
-          .then((myStock) {
-        print("my Merch: " +
-            myStock.get(myDatabaseTags.myStockNameTag) +
-            " " +
-            myStock.get(myDatabaseTags.myStockQuantityTag).toString());
-      }).catchError((onError) {
-        print("error on display stocks: " + onError.toString());
-      });
+        .collection(myDatabaseTags.allDatabaseTag)
+        .doc("J82BQucjHo0amaOm5Waz")
+        .collection(myDatabaseTags.myDatabaseInventoryTag)
+        .doc(categoryId)
+        .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+        .doc(stockId)
+        .get()
+        .then((myStock) {
+      myList = [
+        stockId,
+        categoryId,
+        myStock.get(myDatabaseTags.myStockNameTag),
+        myStock.get(myDatabaseTags.myStockCategoryTag),
+        myStock.get(myDatabaseTags.myStockQuantityTag).toString(),
+        myStock.get(myDatabaseTags.myStockPriceTag).toString(),
+        ""
+      ];
+    }).catchError((onError) {
+      print("error on display stocks: " + onError.toString());
+      myList = [null];
+    });
+    return myList;
   }
 }

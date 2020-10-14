@@ -1,4 +1,3 @@
-import 'package:automanager/view/homeView.dart';
 import 'package:automanager/view/makeSaleReceiptView.dart';
 import 'package:flutter/material.dart';
 
@@ -9,22 +8,41 @@ class WidgetForFab {
   final String viewState;
   final Color myColorForFab;
 
-  getWidgetForFab() {
+  getWidgetForFab(List<String> mySelectedItemValues) {
     final Size mediaSize = MediaQuery.of(context).size;
 
     return GestureDetector(
         onTap: () {
           switch (viewState) {
             case "MakeSaleView":
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          MakeSaleReceiptView()));
+              if (mySelectedItemValues != null &&
+                  mySelectedItemValues.isNotEmpty) {
+                print("my list is nnull" + mySelectedItemValues.toString());
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => MakeSaleReceiptView(
+                            mySelectedItemValues[0],
+                            mySelectedItemValues[1],
+                            mySelectedItemValues[2])));
+              } else {
+                showDialog(
+                    context: this.context,
+                    builder: (BuildContext ctx) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child:
+                            AlertDialog(title: Text("Please choose an item")),
+                      );
+                    });
+              }
               break;
 
             case "MakeSaleReceiptView":
               print("do databsae action -saleviewreceipt");
+
               Navigator.pop(context);
               Navigator.pop(context);
               break;

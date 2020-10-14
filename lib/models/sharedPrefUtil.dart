@@ -24,6 +24,6 @@ class SharedPrefUtil {
 
   Future<bool> getIsCurrentUserLoggedIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return await prefs.getBool(stringKey_2);
+    return prefs.getBool(stringKey_2);
   }
 }

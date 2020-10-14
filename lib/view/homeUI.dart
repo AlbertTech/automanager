@@ -4,13 +4,18 @@ import 'package:automanager/view/itemDisplayView.dart';
 import 'package:automanager/view/makeSaleView.dart';
 import 'package:automanager/view/rolesView.dart';
 import 'package:automanager/view/salesReportView.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:automanager/view_models/homeViewModel.dart';
 import 'package:flutter/material.dart';
 
 class HomeUI {
-  HomeUI(this.context, this._listItem, this.myLightBlueColor, this.myColorLightOrange,
-      this.myClipper_1, this.myClipper_2);
+  HomeUI(
+      this.context,
+      this._listItem,
+      this.myLightBlueColor,
+      this.myColorLightOrange,
+      this.myClipper_1,
+      this.myClipper_2,
+      this.homeViewModel);
 
   final BuildContext context;
   final Color myLightBlueColor;
@@ -18,7 +23,8 @@ class HomeUI {
   final CustomClipper myClipper_1;
   final CustomClipper myClipper_2;
   final List<String> _listItem;
-  FirebaseAuth firebaseAuth;
+  final HomeViewModel homeViewModel;
+
   Widget getHomeUI() {
     final mediaSize = MediaQuery.of(context).size;
     return Container(
@@ -58,13 +64,18 @@ class HomeUI {
                   Container(
                     width: mediaSize.width * .9,
                     height: mediaSize.height * .04,
-                    child: Text(
-                      "National Bookstore",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                    child: GestureDetector(
+                      onTap: () async {
+                        await joinCreateDatabase(mediaSize);
+                      },
+                      child: Text(
+                        myDatabaseTitle(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
                     ),
                   ),
                   Spacer(),
@@ -93,11 +104,11 @@ class HomeUI {
                                 decoration: BoxDecoration(
                                     color: myColorLightOrange,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.45),
+                                          color:
+                                              Colors.black54.withOpacity(0.45),
                                           spreadRadius: 1,
                                           blurRadius: 4,
                                           offset: Offset(3.5, 4))
@@ -143,11 +154,11 @@ class HomeUI {
                                 decoration: BoxDecoration(
                                     color: myColorLightOrange,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.45),
+                                          color:
+                                              Colors.black54.withOpacity(0.45),
                                           spreadRadius: 1,
                                           blurRadius: 4,
                                           offset: Offset(3.5, 4))
@@ -197,11 +208,11 @@ class HomeUI {
                                 decoration: BoxDecoration(
                                     color: myColorLightOrange,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.45),
+                                          color:
+                                              Colors.black54.withOpacity(0.45),
                                           spreadRadius: 1,
                                           blurRadius: 4,
                                           offset: Offset(3.5, 4))
@@ -248,11 +259,11 @@ class HomeUI {
                                 decoration: BoxDecoration(
                                     color: myColorLightOrange,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.45),
+                                          color:
+                                              Colors.black54.withOpacity(0.45),
                                           spreadRadius: 1,
                                           blurRadius: 4,
                                           offset: Offset(3.5, 4))
@@ -302,11 +313,11 @@ class HomeUI {
                                 decoration: BoxDecoration(
                                     color: myColorLightOrange,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.45),
+                                          color:
+                                              Colors.black54.withOpacity(0.45),
                                           spreadRadius: 1,
                                           blurRadius: 4,
                                           offset: Offset(3.5, 4))
@@ -352,11 +363,11 @@ class HomeUI {
                                 decoration: BoxDecoration(
                                     color: myColorLightOrange,
                                     borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
+                                        BorderRadius.all(Radius.circular(13)),
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
-                                          color: Colors.black54
-                                              .withOpacity(0.45),
+                                          color:
+                                              Colors.black54.withOpacity(0.45),
                                           spreadRadius: 1,
                                           blurRadius: 4,
                                           offset: Offset(3.5, 4))
@@ -399,6 +410,32 @@ class HomeUI {
           )
         ],
       ),
+    );
+  }
+
+  String myDatabaseTitle() {
+    return "Tap to Create/Join";
+  }
+
+  joinCreateDatabase(Size mediaSize) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      // false = user must tap button, true = tap outside dialog
+      builder: (BuildContext dialogContext) {
+        return GestureDetector(
+          onTap: () {},
+          child: AlertDialog(
+            actions: [
+              Row(
+                children: [
+
+                ],
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 }

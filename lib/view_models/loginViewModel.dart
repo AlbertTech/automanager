@@ -46,29 +46,31 @@ class LoginViewModel {
   }
 
   Future<void> loginWithFacebook(BuildContext ctx) async {
-    await loginModel.loginWithFacebook().whenComplete(() async {
-      if (loginModel.isLoginSuccessful == true) {
+    await loginModel.loginWithFacebook().then((isSuccessful) async {
+      if (isSuccessful == true) {
         myUserId = loginModel.loginReturnValue;
         isLoggedIn = true;
         await sharedPrefUtil.setCurrentUser(myUserId, isLoggedIn);
-        await myNavigatorUtil.navigateNewPage(ctx);
+        myNavigatorUtil.navigateNewPage(ctx);
       } else {
         myErrorCode = loginModel.loginReturnValue;
         isLoggedIn = false;
+        FocusScope.of(ctx).unfocus();
       }
     });
   }
 
   Future<void> loginWithGoogle(BuildContext ctx) async {
-    await loginModel.loginWithGoogle().whenComplete(() async {
-      if (loginModel.isLoginSuccessful == true) {
+    await loginModel.loginWithGoogle().then((isSuccessful) async {
+      if (isSuccessful == true) {
         myUserId = loginModel.loginReturnValue;
         isLoggedIn = true;
         await sharedPrefUtil.setCurrentUser(myUserId, isLoggedIn);
-        await myNavigatorUtil.navigateNewPage(ctx);
+        myNavigatorUtil.navigateNewPage(ctx);
       } else {
         myErrorCode = loginModel.loginReturnValue;
         isLoggedIn = false;
+        FocusScope.of(ctx).unfocus();
       }
     });
   }

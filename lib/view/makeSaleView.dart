@@ -21,6 +21,7 @@ class _MakeSaleViewState extends State<MakeSaleView> {
   TextEditingController mySearchBar;
   Map<String, String> mySuggestions;
   List<String> myNewSuggestion;
+  List<String> mySelectedItemValues;
   FocusNode myFocus;
   bool isRefreshed;
 
@@ -28,6 +29,7 @@ class _MakeSaleViewState extends State<MakeSaleView> {
   void initState() {
     makeSaleViewModel = new MakeSaleViewModel();
     myNewSuggestion = new List();
+    mySelectedItemValues = new List();
     myFocus = new FocusNode();
     myColors = new MyColors();
     myClippedPathWithShadow = new ClipPathWithShadow(
@@ -36,15 +38,17 @@ class _MakeSaleViewState extends State<MakeSaleView> {
     mySearchBar = new TextEditingController();
     mySuggestions = new Map();
     makeSaleUI = new MakeSaleUI(
-        context,
-        this.callBack,
-        makeSaleViewModel,
-        myClippedPathWithShadow,
-        myColors.colorLightOrange,
-        myColors.colorLightdark,
-        mySearchBar,
-        mySuggestions,
+        this.context,
+        this.updateMyMaps,
+        this.updateMySelectedItem,
+        this.makeSaleViewModel,
+        this.myClippedPathWithShadow,
+        this.myColors.colorLightOrange,
+        this.myColors.colorLightdark,
+        this.mySearchBar,
+        this.mySuggestions,
         this.myNewSuggestion,
+        this.mySelectedItemValues,
         this.myFocus,
         this.isRefreshed);
     super.initState();
@@ -56,11 +60,17 @@ class _MakeSaleViewState extends State<MakeSaleView> {
     super.dispose();
   }
 
-  void callBack(
-      Map thisMap, Map newMap, List myNewSuggestions) {
+  void updateMyMaps(Map thisMap, Map newMap, List myNewSuggestions) {
     setState(() {
       thisMap.addAll(newMap);
       myNewSuggestions.addAll(newMap.values.toList());
+    });
+  }
+
+  void updateMySelectedItem(
+      List<String> myViewingList, List<String> myUpdatedList) {
+    setState(() {
+      myViewingList.addAll(myUpdatedList);
     });
   }
 
@@ -74,7 +84,7 @@ class _MakeSaleViewState extends State<MakeSaleView> {
           body: makeSaleUI.getMakeSaleUI(),
           floatingActionButton:
               WidgetForFab(context, "MakeSaleView", MyColors().colorDeepOrange)
-                  .getWidgetForFab(),
+                  .getWidgetForFab(mySelectedItemValues),
         ));
   }
 }

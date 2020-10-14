@@ -5,6 +5,7 @@ import 'package:automanager/view/registerView.dart';
 import 'package:automanager/view_models/loginViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+
 class LoginUI {
   LoginUI(
       this.sharedPrefUtil,
@@ -170,17 +171,8 @@ class LoginUI {
                       children: <Widget>[
                         GestureDetector(
                             onTap: () async {
-                              await loginViewModel
-                                  .loginWithEmailPassword(
-                                      txtEmail.text, txtPass.text, context)
-                                  .then((value) async {
-                                await sharedPrefUtil.setCurrentUser(
-                                    loginViewModel.myUserId.toString(),
-                                    loginViewModel.isLoggedIn);
-                                await myNavigatorUtil.navigateNewPage(context);
-                              }).catchError((onError) {
-                                print("onerror : " + onError.toString());
-                              });
+                              await loginViewModel.loginWithEmailPassword(
+                                  txtEmail.text, txtPass.text, context);
                             },
                             child: new Container(
                                 constraints: BoxConstraints(
@@ -256,7 +248,7 @@ class LoginUI {
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                         onTap: () {
-                          print("forgot password clicked");
+
                         },
                         child: Text(
                           "  Forgot Password?",
@@ -275,15 +267,7 @@ class LoginUI {
                           GestureDetector(
                               onTap: () async {
                                 print("Container clicked - facebook");
-                                await loginViewModel
-                                    .loginWithFacebook(context)
-                                    .then((value) async {
-                                  await sharedPrefUtil.setCurrentUser(
-                                      loginViewModel.myUserId.toString(),
-                                      loginViewModel.isLoggedIn);
-                                  await myNavigatorUtil
-                                      .navigateNewPage(context);
-                                });
+                                await loginViewModel.loginWithFacebook(context);
                               },
                               child: new Container(
                                   constraints: BoxConstraints(
@@ -315,11 +299,7 @@ class LoginUI {
                           GestureDetector(
                               onTap: () async {
                                 print("google login");
-                                await loginViewModel
-                                    .loginWithGoogle(context)
-                                    .catchError((onError) {
-                                  print("error here: " + onError.toString());
-                                });
+                                await loginViewModel.loginWithGoogle(context);
                               },
                               child: new Container(
                                   constraints: BoxConstraints(
