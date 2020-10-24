@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/utilities/textFieldFocusUtilities.dart';
 import 'package:automanager/view_models/addStockViewModel.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class AddStockUI {
   final BuildContext context;
   final AddStockViewModel addStockViewModel;
   final TextFieldFocusUtilities textFieldFocusUtilities;
-  final SharedPrefUtil sharedPrefUtil;
+  final UserInfoSharedPref sharedPrefUtil;
   final Widget myClipPathShadowed;
   final Function callBackMapDesc;
   final Function callBackImages;

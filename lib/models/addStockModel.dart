@@ -10,15 +10,17 @@ class AddStockModel {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   Future<void> addStock(
-      String sharedPrefId,
-      String txtStockName,
-      String txtStockCategory,
-      int txtStockQuantity,
-      int txtStockPriceEach,
-      String txtStockDateOrder,
-      String txtStockDateArrival,
-      String txtStockDistributor,
-      Map myMapDesc) async {
+    String sharedPrefId,
+    String currentDatabaseId,
+    String txtStockName,
+    String txtStockCategory,
+    int txtStockQuantity,
+    int txtStockPriceEach,
+    String txtStockDateOrder,
+    String txtStockDateArrival,
+    String txtStockDistributor,
+    Map myMapDesc,
+  ) async {
     if (firebaseAuth.currentUser != null &&
         firebaseAuth.currentUser.toString().isNotEmpty) {
       print("====checked firebase current user not null=======");
@@ -27,52 +29,17 @@ class AddStockModel {
         print("====checked firebase authUID equal to sharedPref UID =======");
         print("my fireAuth uid: " + firebaseAuth.currentUser.uid);
         print("my sharedPref uid: " + sharedPrefId);
-        await findMyCategories(txtStockCategory);
-        print("====checked find categories =======");
-        for (int index = 0; index < myCategories.length; index++) {
-          if (myCategories.values.toList()[index] ==
-              txtStockCategory.toLowerCase()) {
-            await firebaseFirestore
-                .collection("Database")
-                .doc("H2Rx5qFb3bfMxb6oA7ax")
-                .collection(myDatabaseTags.myDatabaseInventoryTag)
-                .doc(myCategories.keys.toList()[index])
-                .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
-                .add({
-              myDatabaseTags.myStockNameTag: txtStockName,
-              myDatabaseTags.myStockCategoryTag: txtStockCategory,
-              myDatabaseTags.myStockQuantityTag: txtStockQuantity,
-              myDatabaseTags.myStockPriceTag: txtStockPriceEach,
-              myDatabaseTags.myStockOrderedDate: txtStockDateOrder,
-              myDatabaseTags.myStockDateArrival: txtStockDateArrival,
-              myDatabaseTags.myStockBoughtFrom: txtStockDistributor,
-            }).then((value) {
-              FirebaseFirestore.instance
-                  .collection(myDatabaseTags.allDatabaseTag)
-                  .doc(value.id)
-                  .collection(myDatabaseTags.myStockDescriptionTag)
-                  .add(myMapDesc)
-                  .catchError((onError) {
-                print("error trap adding desc: " + onError.toString());
-              });
-            }).catchError((onError) {
-              print("error trap on adding inventory: " + onError.toString());
-            });
-            break;
-          } else if (myCategories.values.toList()[index] != txtStockCategory &&
-              index == myCategories.length - 1) {
-            await firebaseFirestore
-                .collection(myDatabaseTags.allDatabaseTag)
-                .doc("H2Rx5qFb3bfMxb6oA7ax")
-                .collection(myDatabaseTags.myDatabaseInventoryTag)
-                .add({
-              myDatabaseTags.myDatabaseCategoryTag: txtStockCategory
-            }).then((afterAddingCategoryValue) async {
+        await findMyCategories(txtStockCategory, currentDatabaseId);
+        print("====checked finding categories =======  ");
+        if (myCategories.length > 0) {
+          for (int index = 0; index < myCategories.length; index++) {
+            if (myCategories.values.toList()[index].toLowerCase() ==
+                txtStockCategory.toLowerCase()) {
               await firebaseFirestore
-                  .collection("Database")
-                  .doc("H2Rx5qFb3bfMxb6oA7ax")
+                  .collection(myDatabaseTags.allDatabaseTag)
+                  .doc(currentDatabaseId)
                   .collection(myDatabaseTags.myDatabaseInventoryTag)
-                  .doc(afterAddingCategoryValue.id)
+                  .doc(myCategories.keys.toList()[index])
                   .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
                   .add({
                 myDatabaseTags.myStockNameTag: txtStockName,
@@ -82,10 +49,15 @@ class AddStockModel {
                 myDatabaseTags.myStockOrderedDate: txtStockDateOrder,
                 myDatabaseTags.myStockDateArrival: txtStockDateArrival,
                 myDatabaseTags.myStockBoughtFrom: txtStockDistributor,
-              }).then((value) async {
-                await FirebaseFirestore.instance
+              }).then((afterAddingCategoryValue) async {
+                await firebaseFirestore
                     .collection(myDatabaseTags.allDatabaseTag)
-                    .doc(value.id)
+                    .doc(currentDatabaseId)
+                    .collection(myDatabaseTags.myDatabaseInventoryTag)
+                    .doc(myCategories.keys.toList()[index])
+                    .collection(
+                    myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+                    .doc(afterAddingCategoryValue.id)
                     .collection(myDatabaseTags.myStockDescriptionTag)
                     .add(myMapDesc)
                     .catchError((onError) {
@@ -94,13 +66,100 @@ class AddStockModel {
               }).catchError((onError) {
                 print("error trap on adding inventory: " + onError.toString());
               });
-            }).catchError((onError) {
-              print("error on adding category: " + onError.toString());
-            });
-            break;
-          } else {
-            continue;
+              break;
+            } else if (myCategories.values.toList()[index].toLowerCase() !=
+                    txtStockCategory.toLowerCase() &&
+                index ==
+                    (myCategories.length == 0 ? 0 : myCategories.length - 1)) {
+              await firebaseFirestore
+                  .collection(myDatabaseTags.allDatabaseTag)
+                  .doc(currentDatabaseId)
+                  .collection(myDatabaseTags.myDatabaseInventoryTag)
+                  .add({
+                myDatabaseTags.myDatabaseCategoryTag: txtStockCategory
+              }).then((afterAddingCategoryValue) async {
+                await firebaseFirestore
+                    .collection(myDatabaseTags.allDatabaseTag)
+                    .doc(currentDatabaseId)
+                    .collection(myDatabaseTags.myDatabaseInventoryTag)
+                    .doc(afterAddingCategoryValue.id)
+                    .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+                    .add({
+                  myDatabaseTags.myStockNameTag: txtStockName,
+                  myDatabaseTags.myStockCategoryTag: txtStockCategory,
+                  myDatabaseTags.myStockQuantityTag: txtStockQuantity,
+                  myDatabaseTags.myStockPriceTag: txtStockPriceEach,
+                  myDatabaseTags.myStockOrderedDate: txtStockDateOrder,
+                  myDatabaseTags.myStockDateArrival: txtStockDateArrival,
+                  myDatabaseTags.myStockBoughtFrom: txtStockDistributor,
+                }).then((value) async {
+                  await firebaseFirestore
+                      .collection(myDatabaseTags.allDatabaseTag)
+                      .doc(currentDatabaseId)
+                      .collection(myDatabaseTags.myDatabaseInventoryTag)
+                      .doc(afterAddingCategoryValue.id)
+                      .collection(
+                          myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+                      .doc(value.id)
+                      .collection(myDatabaseTags.myStockDescriptionTag)
+                      .add(myMapDesc)
+                      .catchError((onError) {
+                    print("error trap adding desc: " + onError.toString());
+                  });
+                }).catchError((onError) {
+                  print(
+                      "error trap on adding inventory: " + onError.toString());
+                });
+              }).catchError((onError) {
+                print("error on adding category: " + onError.toString());
+              });
+              break;
+            } else {
+              continue;
+            }
           }
+        } else {
+          print("this length sucks");
+          await firebaseFirestore
+              .collection(myDatabaseTags.allDatabaseTag)
+              .doc(currentDatabaseId)
+              .collection(myDatabaseTags.myDatabaseInventoryTag)
+              .add({
+            myDatabaseTags.myDatabaseCategoryTag: txtStockCategory
+          }).then((afterAddingCategoryValue) async {
+            await firebaseFirestore
+                .collection(myDatabaseTags.allDatabaseTag)
+                .doc(currentDatabaseId)
+                .collection(myDatabaseTags.myDatabaseInventoryTag)
+                .doc(afterAddingCategoryValue.id)
+                .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+                .add({
+              myDatabaseTags.myStockNameTag: txtStockName,
+              myDatabaseTags.myStockCategoryTag: txtStockCategory,
+              myDatabaseTags.myStockQuantityTag: txtStockQuantity,
+              myDatabaseTags.myStockPriceTag: txtStockPriceEach,
+              myDatabaseTags.myStockOrderedDate: txtStockDateOrder,
+              myDatabaseTags.myStockDateArrival: txtStockDateArrival,
+              myDatabaseTags.myStockBoughtFrom: txtStockDistributor,
+            }).then((value) async {
+              await firebaseFirestore
+                  .collection(myDatabaseTags.allDatabaseTag)
+                  .doc(currentDatabaseId)
+                  .collection(myDatabaseTags.myDatabaseInventoryTag)
+                  .doc(afterAddingCategoryValue.id)
+                  .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+                  .doc(value.id)
+                  .collection(myDatabaseTags.myStockDescriptionTag)
+                  .add(myMapDesc)
+                  .catchError((onError) {
+                print("error trap adding desc: " + onError.toString());
+              });
+            }).catchError((onError) {
+              print("error trap on adding inventory: " + onError.toString());
+            });
+          }).catchError((onError) {
+            print("error on adding category: " + onError.toString());
+          });
         }
       } else {
         print("current user is logged in, but no uid");
@@ -110,18 +169,23 @@ class AddStockModel {
     }
   }
 
-  Future<void> findMyCategories(txtCategory) async {
+  Future<void> findMyCategories(
+      String txtCategory, String currentDatabaseId) async {
     await firebaseFirestore
         .collection(myDatabaseTags.allDatabaseTag)
-        .doc("H2Rx5qFb3bfMxb6oA7ax")
+        .doc(currentDatabaseId)
         .collection(myDatabaseTags.myDatabaseInventoryTag)
         .get()
         .then((QuerySnapshot snapshot) {
       print(snapshot.docs.length);
       for (int i = 0; i < snapshot.docs.length; i++) {
+        //if snapshot.docs[i].data().containsKey("ofCategory")
         myCategories.addAll({
-          snapshot.docs.toList()[i].id:
-              snapshot.docs.toList()[i].get("Category").toString().toLowerCase()
+          snapshot.docs.toList()[i].id: snapshot.docs
+              .toList()[i]
+              .get(myDatabaseTags.myDatabaseCategoryTag)
+              .toString()
+              .toLowerCase()
         });
       }
       print("new list: " + myCategories.toString());

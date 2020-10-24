@@ -1,9 +1,10 @@
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/utilities/myClippers.dart';
 import 'package:automanager/resources/myColors.dart';
 import 'package:automanager/view/homeUI.dart';
 import 'package:automanager/view_models/homeViewModel.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class HomeView extends StatefulWidget {
   @override
@@ -15,11 +16,19 @@ class _HomeViewState extends State<HomeView> {
   MyColors myColors;
   MyClippers myClippers_1;
   MyClippers myClippers_2;
+  String myCurrentDatabase;
+  TextEditingController txtControllerCreateDatabaseName;
+  TextEditingController txtControllerJoinDatabaseName;
   HomeViewModel homeViewModel;
   HomeUI homeUI;
 
   @override
   void initState() {
+    super.initState();
+    print("now initializing");
+    myCurrentDatabase = "empty";
+    txtControllerCreateDatabaseName = new TextEditingController();
+    txtControllerJoinDatabaseName = new TextEditingController();
     myImagePaths = [
       'assets/images/image_add_stock.png',
       'assets/images/image_make_sale.png',
@@ -31,16 +40,8 @@ class _HomeViewState extends State<HomeView> {
     myColors = new MyColors();
     myClippers_1 = new MyClippers("HomeView_1");
     myClippers_2 = new MyClippers("HomeView_2");
-homeViewModel = new HomeViewModel();
-    homeUI = new HomeUI(context, myImagePaths, myColors.colorLightBlue,
-        myColors.colorLightOrange, myClippers_1, myClippers_2,homeViewModel);
-    SharedPrefUtil()
-        .getCurrentUserId()
-        .then((value) => print("my uid: " + value.toString()));
-    SharedPrefUtil()
-        .getIsCurrentUserLoggedIn()
-        .then((value) => print("isLoggedIn: " + value.toString()));
-    super.initState();
+    homeViewModel = new HomeViewModel();
+    print("done initializing");
   }
 
   @override
@@ -55,6 +56,36 @@ homeViewModel = new HomeViewModel();
         home: Scaffold(
             resizeToAvoidBottomInset: false,
             resizeToAvoidBottomPadding: false,
-            body: homeUI.getHomeUI()));
+            body: getMyWidgetHomeUI()));
+  }
+
+  Widget getMyWidgetHomeUI() {
+    return StreamBuilder<String>(
+        stream: homeViewModel.getMyStreamDataSharedPref(),
+        builder: (BuildContext ctx, AsyncSnapshot<String> asyncSnapshot) {
+          if (asyncSnapshot.connectionState == ConnectionState.done) {
+            return new HomeUI(
+                    this.context,
+                    myImagePaths,
+                    myColors.colorLightBlue,
+                    myColors.colorLightOrange,
+                    myColors.colorDeepOrange,
+                    myClippers_1,
+                    myClippers_2,
+                    homeViewModel,
+                    txtControllerCreateDatabaseName,
+                    txtControllerJoinDatabaseName,
+                    ((asyncSnapshot.data.toString().isNotEmpty &&
+                            asyncSnapshot.data.toString() != "" &&
+                            asyncSnapshot.data.toString() != " ")
+                        ? asyncSnapshot.data.toString()
+                        : "Tap to Create/Join"))
+                .getHomeUI();
+          } else {
+            return Center(
+              child: Text("Loading.."),
+            );
+          }
+        });
   }
 }

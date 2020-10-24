@@ -1,8 +1,8 @@
 import 'package:automanager/models/makeSaleReceiptModel.dart';
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 
 class MakeSaleReceiptViewModel {
-  final SharedPrefUtil sharedPrefUtil = new SharedPrefUtil();
+  final UserInfoSharedPref sharedPrefUtil = new UserInfoSharedPref();
   final MakeSaleReceiptModel makeSaleReceiptModel = new MakeSaleReceiptModel();
 
   Future<void> performMakeOfSale(
@@ -17,22 +17,29 @@ class MakeSaleReceiptViewModel {
       String myCustomerBalance,
       String myCustomerAge,
       String myCustomerGender) async {
-    await makeSaleReceiptModel
-        .makeASaleReceipt(
-            myStockUid,
-            myCategoryStockUid,
-            myStockName,
-            myOrderType,
-            myOrderDate,
-            myCustomerName,
-            myCustomerLocation,
-            myCustomerQuantity,
-            myCustomerBalance,
-            myCustomerAge,
-            myCustomerGender)
-        .then((isSuccessful) {
-      if (isSuccessful == true) {
-      } else {}
+    sharedPrefUtil.getIsCurrentDatabase().then((currentDatabaseId) async {
+      await makeSaleReceiptModel
+          .makeASaleReceipt(
+              myStockUid,
+              myCategoryStockUid,
+              myStockName,
+              myOrderType,
+              myOrderDate,
+              myCustomerName,
+              myCustomerLocation,
+              myCustomerQuantity,
+              myCustomerBalance,
+              myCustomerAge,
+              myCustomerGender,
+              currentDatabaseId)
+          .then((isSuccessful) {
+        if (isSuccessful == true) {
+        } else {
+          print("error on make receipt: ");
+        }
+      });
+    }).catchError((onError) {
+      print("error on getting current database id: " + onError.toString());
     });
   }
 }

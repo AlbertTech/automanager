@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/resources/myColors.dart';
 import 'package:automanager/utilities/myClippers.dart';
 import 'package:automanager/utilities/shadowClipper.dart';
@@ -23,7 +23,7 @@ class _AddStockViewState extends State<AddStockView> {
   ClipPathWithShadow clipPathWithShadow;
   MyColors myColors;
   WidgetForFab widgetForFab;
-  SharedPrefUtil sharedPrefUtil;
+  UserInfoSharedPref sharedPrefUtil;
   TextEditingController txtDateOrder;
   TextEditingController txtDateArrival;
   TextEditingController txtDescriptionName;
@@ -58,7 +58,7 @@ class _AddStockViewState extends State<AddStockView> {
         MyClippers("AddStockView"), myColors.colorLightOrange, 8, 0, -3);
     widgetForFab =
         new WidgetForFab(context, "AddStockView", myColors.colorDeepOrange);
-    sharedPrefUtil = new SharedPrefUtil();
+    sharedPrefUtil = new UserInfoSharedPref();
     addStockUI = new AddStockUI(
         context,
         addStockViewModel,

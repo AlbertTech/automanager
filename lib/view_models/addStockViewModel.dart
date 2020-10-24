@@ -1,18 +1,27 @@
 import 'package:automanager/models/addStockModel.dart';
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/utilities/textValidatorUtility.dart';
 
 class AddStockViewModel {
   AddStockModel addStockModel = new AddStockModel();
-  SharedPrefUtil sharedPrefUtil = new SharedPrefUtil();
+  UserInfoSharedPref sharedPrefUtil = new UserInfoSharedPref();
   TextValidatorUtility textValidatorUtility = new TextValidatorUtility();
   List<String> mySuggestionCategory = new List();
   bool isUpdated = false;
 
-  Future<void> updateMyCategorySuggestions(stockCategory) async {
-    await addStockModel.findMyCategories(stockCategory).then((value) {
-      mySuggestionCategory.addAll(addStockModel.myCategories.values.toList());
-      isUpdated = true;
+  Future<void> updateMyCategorySuggestions(String stockCategory) async {
+    sharedPrefUtil.getIsCurrentDatabase().then((currentDatabaseUid) async {
+      await addStockModel
+          .findMyCategories(stockCategory, currentDatabaseUid)
+          .then((foundCategoryValues) {
+        mySuggestionCategory.addAll(addStockModel.myCategories.values.toList());
+        isUpdated = true;
+      }).catchError((onError) {
+        print("error on finding my update category suggestions: " +
+            onError.toString());
+      });
+    }).catchError((onError) {
+      print("error on getting current database: " + onError.toString());
     });
   }
 
@@ -48,20 +57,28 @@ class AddStockViewModel {
                   .getCurrentUserId()
                   .then((sharedPrefUtilUid) async {
                 print("====checked sharedPref getUserId=======");
-                await addStockModel
-                    .addStock(
-                        sharedPrefUtilUid,
-                        stockName,
-                        stockCategory,
-                        int.parse(stockQuantity),
-                        int.parse(stockPriceEach),
-                        stockDateOrder,
-                        stockDateArrival,
-                        stockDistributor,
-                        myMapDesc)
-                    .catchError((onError) {
+                await sharedPrefUtil
+                    .getIsCurrentDatabase()
+                    .then((currentDatabaseUid) async {
+                  await addStockModel
+                      .addStock(
+                          sharedPrefUtilUid,
+                          currentDatabaseUid,
+                          stockName,
+                          stockCategory,
+                          int.parse(stockQuantity),
+                          int.parse(stockPriceEach),
+                          stockDateOrder,
+                          stockDateArrival,
+                          stockDistributor,
+                          myMapDesc)
+                      .catchError((onError) {
+                    print("my user id error with fireauth: " +
+                        onError.toString());
+                  });
+                }).catchError((onError) {
                   print(
-                      "my user id error with fireauth: " + onError.toString());
+                      "error getting current database: " + onError.toString());
                 });
               }).catchError((onError) {
                 print("error on getting userId shared pref: " +

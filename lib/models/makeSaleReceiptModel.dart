@@ -1,4 +1,4 @@
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/resources/myDatabaseTags.dart';
 import 'package:automanager/resources/mySalesTags.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +7,7 @@ class MakeSaleReceiptModel {
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final MyDatabaseTags myDatabaseTags = new MyDatabaseTags();
   final MySalesTags mySalesTags = new MySalesTags();
-  final SharedPrefUtil sharedPrefUtil = new SharedPrefUtil();
+  final UserInfoSharedPref sharedPrefUtil = new UserInfoSharedPref();
 
   bool isSuccessful;
 
@@ -22,7 +22,8 @@ class MakeSaleReceiptModel {
       String myCustomerQuantity,
       String myCustomerBalance,
       String myCustomerAge,
-      String myCustomerGender) async {
+      String myCustomerGender,
+      String currentDatabaseId) async {
     await sharedPrefUtil
         .getIsCurrentUserLoggedIn()
         .then((isCurrentUserLoggedIn) async {
@@ -33,7 +34,9 @@ class MakeSaleReceiptModel {
             await firebaseFirestore
                 .collection("" +
                     myDatabaseTags.allDatabaseTag +
-                    "/J82BQucjHo0amaOm5Waz/" +
+                    "/" +
+                    currentDatabaseId +
+                    "/" +
                     myDatabaseTags.myDatabaseInventoryTag +
                     "/" +
                     myCategoryStockUid +
@@ -47,7 +50,9 @@ class MakeSaleReceiptModel {
                 await firebaseFirestore
                     .collection("" +
                         myDatabaseTags.allDatabaseTag +
-                        "/J82BQucjHo0amaOm5Waz/" +
+                        "/" +
+                        currentDatabaseId +
+                        "/" +
                         myDatabaseTags.myDatabaseInventoryTag +
                         "/" +
                         myCategoryStockUid +
@@ -62,7 +67,9 @@ class MakeSaleReceiptModel {
                   await firebaseFirestore
                       .collection("/" +
                           myDatabaseTags.allDatabaseTag +
-                          "/J82BQucjHo0amaOm5Waz/" +
+                          "/" +
+                          currentDatabaseId +
+                          "/" +
                           mySalesTags.allSalesTag +
                           "")
                       .add({

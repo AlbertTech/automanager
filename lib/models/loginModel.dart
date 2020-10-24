@@ -6,9 +6,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginModel {
   final String myFacebookLoginPermission_1 = "email";
-  String loginReturnValue = "";
+  String loginUid = "";
   bool isLoginSuccessful = false;
-
+  String myCurrentDatabase = "";
+  List<String> myDatabaseList = new List();
+  List<dynamic> listConverter = new List();
+  String myCurrentProfileId = "";
+  String myCurrentDbName = "";
   final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -22,7 +26,7 @@ class LoginModel {
     await firebaseAuth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((signInCredentialValue) async {
-      loginReturnValue = signInCredentialValue.user.uid;
+      loginUid = signInCredentialValue.user.uid;
       isLoginSuccessful = true;
 
       await firebaseFirestore
@@ -34,13 +38,31 @@ class LoginModel {
           .then((myUserAccount) async {
         if (myUserAccount.docs.length != null &&
             myUserAccount.docs.isNotEmpty) {
+          myCurrentDatabase =
+              myUserAccount.docs[0].get(myUserTags.myCurrentDatabaseId);
+          listConverter = myUserAccount.docs[0].get(myUserTags.myDatabaseList);
+          myDatabaseList = listConverter.map((e) => e as String).toList();
+          myCurrentProfileId = myUserAccount.docs[0].id;
+          myCurrentDbName =
+              myUserAccount.docs[0].get(myUserTags.myUserCurrentDatabaseName);
           isLoginSuccessful = true;
         } else {
           await firebaseFirestore.collection(myUserTags.myUserAll).add({
             myUserTags.myUserIdTag: signInCredentialValue.user.uid,
             myUserTags.myUserIdTag: signInCredentialValue.user.uid,
             myUserTags.myUserNameTag: signInCredentialValue.user.displayName,
-            myUserTags.myUserEmailTag: signInCredentialValue.user.email
+            myUserTags.myUserEmailTag: signInCredentialValue.user.email,
+            myUserTags.myUserCurrentDatabaseName: "",
+            myUserTags.myCurrentDatabaseId: "",
+            myUserTags.myDatabaseList: [],
+          }).then((myUserAccountUserDatabase) async {
+            myCurrentDatabase = "";
+            myDatabaseList = [];
+            myCurrentProfileId = myUserAccountUserDatabase.id;
+            await myUserAccountUserDatabase.get().then((value) {
+              myCurrentDbName = value.get(myUserTags.myUserCurrentDatabaseName);
+            });
+            isLoginSuccessful = true;
           }).catchError((onError) {
             print("error on adding user in firestore " + onError.toString());
             isLoginSuccessful = false;
@@ -50,7 +72,6 @@ class LoginModel {
         print("error on finding user in firestore " + onError.toString());
       });
     }).catchError((onError) {
-      loginReturnValue = onError.toString();
       isLoginSuccessful = false;
       print("error login" + onError.toString());
     }).timeout((Duration(seconds: 7)), onTimeout: () {
@@ -70,10 +91,10 @@ class LoginModel {
           .signInWithCredential(
               FacebookAuthProvider.credential(value.accessToken.token))
           .then((signInCredentialValue) async {
-        loginReturnValue = signInCredentialValue.user.uid;
+        loginUid = signInCredentialValue.user.uid;
         isLoginSuccessful = true;
         print("my login values: " +
-            loginReturnValue +
+            loginUid +
             " " +
             isLoginSuccessful.toString());
         await firebaseFirestore
@@ -85,13 +106,33 @@ class LoginModel {
             .then((myUserAccount) async {
           if (myUserAccount.docs.length != null &&
               myUserAccount.docs.isNotEmpty) {
+            myCurrentDatabase =
+                myUserAccount.docs[0].get(myUserTags.myCurrentDatabaseId);
+            listConverter =
+                myUserAccount.docs[0].get(myUserTags.myDatabaseList);
+            myDatabaseList = listConverter.map((e) => e as String).toList();
+            myCurrentProfileId = myUserAccount.docs[0].id;
+            myCurrentDbName =
+                myUserAccount.docs[0].get(myUserTags.myUserCurrentDatabaseName);
             isLoginSuccessful = true;
           } else {
             await firebaseFirestore.collection(myUserTags.myUserAll).add({
               myUserTags.myUserIdTag: signInCredentialValue.user.uid,
               myUserTags.myUserIdTag: signInCredentialValue.user.uid,
               myUserTags.myUserNameTag: signInCredentialValue.user.displayName,
-              myUserTags.myUserEmailTag: signInCredentialValue.user.email
+              myUserTags.myUserEmailTag: signInCredentialValue.user.email,
+              myUserTags.myUserCurrentDatabaseName: "",
+              myUserTags.myCurrentDatabaseId: "",
+              myUserTags.myDatabaseList: [],
+            }).then((myUserAccountUserDatabase) async {
+              myCurrentDatabase = "";
+              myDatabaseList = [];
+              myCurrentProfileId = myUserAccountUserDatabase.id;
+              await myUserAccountUserDatabase.get().then((value) {
+                myCurrentDbName =
+                    value.get(myUserTags.myUserCurrentDatabaseName);
+              });
+              isLoginSuccessful = true;
             }).catchError((onError) {
               print("error on adding user in firestore " + onError.toString());
               isLoginSuccessful = false;
@@ -124,10 +165,10 @@ class LoginModel {
               idToken: googleSignInAuthentication.idToken,
               accessToken: googleSignInAuthentication.accessToken))
           .then((signInCredentialValue) async {
-        loginReturnValue = signInCredentialValue.user.uid;
+        loginUid = signInCredentialValue.user.uid;
         isLoginSuccessful = true;
         print("my login values: " +
-            loginReturnValue +
+            loginUid +
             " " +
             isLoginSuccessful.toString());
 
@@ -140,13 +181,33 @@ class LoginModel {
             .then((myUserAccount) async {
           if (myUserAccount.docs.length != null &&
               myUserAccount.docs.isNotEmpty) {
+            myCurrentDatabase =
+                myUserAccount.docs[0].get(myUserTags.myCurrentDatabaseId);
+            listConverter =
+                myUserAccount.docs[0].get(myUserTags.myDatabaseList);
+            myDatabaseList = listConverter.map((e) => e as String).toList();
+            myCurrentProfileId = myUserAccount.docs[0].id;
+            myCurrentDbName =
+                myUserAccount.docs[0].get(myUserTags.myUserCurrentDatabaseName);
             isLoginSuccessful = true;
           } else {
             await firebaseFirestore.collection(myUserTags.myUserAll).add({
               myUserTags.myUserIdTag: signInCredentialValue.user.uid,
               myUserTags.myUserIdTag: signInCredentialValue.user.uid,
               myUserTags.myUserNameTag: signInCredentialValue.user.displayName,
-              myUserTags.myUserEmailTag: signInCredentialValue.user.email
+              myUserTags.myUserEmailTag: signInCredentialValue.user.email,
+              myUserTags.myUserCurrentDatabaseName: "",
+              myUserTags.myCurrentDatabaseId: "",
+              myUserTags.myDatabaseList: [],
+            }).then((myUserAccountUserDatabase) async {
+              myCurrentDatabase = "";
+              myDatabaseList = [];
+              myCurrentProfileId = myUserAccountUserDatabase.id;
+              await myUserAccountUserDatabase.get().then((value) {
+                myCurrentDbName =
+                    value.get(myUserTags.myUserCurrentDatabaseName);
+              });
+              isLoginSuccessful = true;
             }).catchError((onError) {
               print("error on adding user in firestore " + onError.toString());
               isLoginSuccessful = false;

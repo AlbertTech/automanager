@@ -348,7 +348,7 @@ class MakeSaleUI {
 
   Future<void> findMyItemSuggestions() async {
     await makeSaleViewModel
-        .searchMyItems(this.txtMySearchBar.text, this.context,
+        .commandSearchForSuggestions(this.txtMySearchBar.text, this.context,
             this.updateMyMaps, this.mySuggestions, this.myNewSuggestion)
         .then((value) {
       isRefreshed = true;

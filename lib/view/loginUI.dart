@@ -1,4 +1,4 @@
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/utilities/myNavigatorUtil.dart';
 import 'package:automanager/utilities/textFieldFocusUtilities.dart';
 import 'package:automanager/view/registerView.dart';
@@ -19,7 +19,7 @@ class LoginUI {
       this.txtEmail,
       this.txtPass);
 
-  final SharedPrefUtil sharedPrefUtil;
+  final UserInfoSharedPref sharedPrefUtil;
   final LoginViewModel loginViewModel;
   final TextFieldFocusUtilities myTextUtility;
   final MyNavigatorUtil myNavigatorUtil;

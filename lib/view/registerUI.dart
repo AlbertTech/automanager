@@ -35,8 +35,8 @@ class RegisterUI {
 
   final GlobalKey<FormState> formKey;
 
-  void _registerEmailPassword(
-      String completeName, email, password, confirmPassword) {
+  Future<void> _registerEmailPassword(
+      String completeName, email, password, confirmPassword) async {
     if (password == confirmPassword) {
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -299,8 +299,8 @@ class RegisterUI {
                       Row(
                         children: <Widget>[
                           GestureDetector(
-                              onTap: () {
-                                _registerEmailPassword(
+                              onTap: () async {
+                                await _registerEmailPassword(
                                     controllerCompleteName.text,
                                     controllerEmail.text,
                                     controllerPassword.text,

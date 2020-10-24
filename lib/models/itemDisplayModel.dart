@@ -11,11 +11,11 @@ class ItemDisplayModel {
 
   bool isSuccessful;
 
-  Future<bool> getMySuggestions(String mySearch) async {
+  Future<bool> getMySuggestions(String mySearch, String myCurrentDatabaseUid) async {
     isSuccessful = false;
     await firebaseFirestore
         .collection(myDatabaseTags.allDatabaseTag)
-        .doc("J82BQucjHo0amaOm5Waz")
+        .doc(myCurrentDatabaseUid)
         .collection(myDatabaseTags.myDatabaseInventoryTag)
         .get()
         .then((myFoundCategories) async {
@@ -25,7 +25,7 @@ class ItemDisplayModel {
             indexCategory++) {
           await firebaseFirestore
               .collection(myDatabaseTags.allDatabaseTag)
-              .doc("J82BQucjHo0amaOm5Waz")
+              .doc(myCurrentDatabaseUid)
               .collection(myDatabaseTags.myDatabaseInventoryTag)
               .doc(myFoundCategories.docs[indexCategory].id)
               .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
@@ -80,11 +80,11 @@ class ItemDisplayModel {
   }
 
   Future<List<String>> displayItemOnSelection(
-      String categoryId, String stockId) async {
+      String categoryId, String stockId, String myCurrentDatabaseUid) async {
     List<String> myList;
     await firebaseFirestore
         .collection(myDatabaseTags.allDatabaseTag)
-        .doc("J82BQucjHo0amaOm5Waz")
+        .doc(myCurrentDatabaseUid)
         .collection(myDatabaseTags.myDatabaseInventoryTag)
         .doc(categoryId)
         .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)

@@ -1,4 +1,4 @@
-import 'package:automanager/models/sharedPrefUtil.dart';
+import 'package:automanager/models/userInfoSharedPref.dart';
 import 'file:///D:/Programming/Flutter_Projects/automanager/lib/utilities/myClippers.dart';
 import 'package:automanager/resources/myColors.dart';
 import 'package:automanager/utilities/myNavigatorUtil.dart';
@@ -13,7 +13,7 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   WidgetsFlutterBinding.ensureInitialized();
-  await SharedPrefUtil().clearValue();
+  await UserInfoSharedPref().clearValue();
   await Firebase.initializeApp();
   await LoginViewModel().fireAuthLogOut();
   runApp(LoginView());
@@ -25,7 +25,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  SharedPrefUtil sharedPrefUtil;
+  UserInfoSharedPref sharedPrefUtil;
   TextFieldFocusUtilities myTextUtility;
   MyColors myColors;
   MyClippers myClippers;
@@ -36,7 +36,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   void initState() {
-    sharedPrefUtil = new SharedPrefUtil();
+    sharedPrefUtil = new UserInfoSharedPref();
     myTextUtility = new TextFieldFocusUtilities();
     myColors = new MyColors();
     myClippers = new MyClippers("LoginView");
