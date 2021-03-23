@@ -24,6 +24,7 @@ class _MakeSaleViewState extends State<MakeSaleView> {
   List<String> mySelectedItemValues;
   FocusNode myFocus;
   bool isRefreshed;
+  List<List<String>> mySuggestionsDescription;
 
   @override
   void initState() {
@@ -37,6 +38,7 @@ class _MakeSaleViewState extends State<MakeSaleView> {
         .getWidget();
     mySearchBar = new TextEditingController();
     mySuggestions = new Map();
+    mySuggestionsDescription = new List();
     makeSaleUI = new MakeSaleUI(
         this.context,
         this.updateMyMaps,
@@ -50,7 +52,8 @@ class _MakeSaleViewState extends State<MakeSaleView> {
         this.myNewSuggestion,
         this.mySelectedItemValues,
         this.myFocus,
-        this.isRefreshed);
+        this.isRefreshed,
+        this.mySuggestionsDescription);
     super.initState();
   }
 
@@ -60,10 +63,13 @@ class _MakeSaleViewState extends State<MakeSaleView> {
     super.dispose();
   }
 
-  void updateMyMaps(Map thisMap, Map newMap, List myNewSuggestions) {
+  void updateMyMaps(Map thisMap, Map newMap, List myNewSuggestions,
+      List mySuggestionsDescriptionToUpdate, List mySuggestionsDescription) {
     setState(() {
       thisMap.addAll(newMap);
+
       myNewSuggestions.addAll(newMap.values.toList());
+      mySuggestionsDescriptionToUpdate.addAll(mySuggestionsDescription);
     });
   }
 
@@ -80,11 +86,7 @@ class _MakeSaleViewState extends State<MakeSaleView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
           resizeToAvoidBottomInset: false,
-          resizeToAvoidBottomPadding: false,
           body: makeSaleUI.getMakeSaleUI(),
-          floatingActionButton:
-              WidgetForFab(context, "MakeSaleView", MyColors().colorDeepOrange)
-                  .getWidgetForFab(mySelectedItemValues),
         ));
   }
 }

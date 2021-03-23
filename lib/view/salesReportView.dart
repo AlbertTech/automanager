@@ -15,7 +15,6 @@ class _SalesReportViewState extends State<SalesReportView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
             resizeToAvoidBottomInset: false,
-            resizeToAvoidBottomPadding: false,
             body: SalesReportUI(
                     context,
                     MyClippers("SalesReportView"),

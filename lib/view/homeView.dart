@@ -1,4 +1,5 @@
 import 'package:automanager/models/userInfoSharedPref.dart';
+import 'package:automanager/resources/myHomeViewButtonTags.dart';
 import 'package:automanager/utilities/myClippers.dart';
 import 'package:automanager/resources/myColors.dart';
 import 'package:automanager/view/homeUI.dart';
@@ -20,6 +21,7 @@ class _HomeViewState extends State<HomeView> {
   TextEditingController txtControllerCreateDatabaseName;
   TextEditingController txtControllerJoinDatabaseName;
   HomeViewModel homeViewModel;
+  HomeViewButtonTags homeViewButtonTags;
   HomeUI homeUI;
 
   @override
@@ -41,6 +43,7 @@ class _HomeViewState extends State<HomeView> {
     myClippers_1 = new MyClippers("HomeView_1");
     myClippers_2 = new MyClippers("HomeView_2");
     homeViewModel = new HomeViewModel();
+    homeViewButtonTags = new HomeViewButtonTags();
     print("done initializing");
   }
 
@@ -55,14 +58,13 @@ class _HomeViewState extends State<HomeView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
             resizeToAvoidBottomInset: false,
-            resizeToAvoidBottomPadding: false,
             body: getMyWidgetHomeUI()));
   }
 
   Widget getMyWidgetHomeUI() {
-    return StreamBuilder<String>(
+    return StreamBuilder<List>(
         stream: homeViewModel.getMyStreamDataSharedPref(),
-        builder: (BuildContext ctx, AsyncSnapshot<String> asyncSnapshot) {
+        builder: (BuildContext ctx, AsyncSnapshot<List> asyncSnapshot) {
           if (asyncSnapshot.connectionState == ConnectionState.done) {
             return new HomeUI(
                     this.context,
@@ -73,12 +75,19 @@ class _HomeViewState extends State<HomeView> {
                     myClippers_1,
                     myClippers_2,
                     homeViewModel,
+                    homeViewButtonTags,
                     txtControllerCreateDatabaseName,
                     txtControllerJoinDatabaseName,
-                    ((asyncSnapshot.data.toString().isNotEmpty &&
-                            asyncSnapshot.data.toString() != "" &&
-                            asyncSnapshot.data.toString() != " ")
-                        ? asyncSnapshot.data.toString()
+                    ((asyncSnapshot.data[0].isNotEmpty)
+                        ? asyncSnapshot.data[0]
+                        : {}),
+                    ((asyncSnapshot.data[1].isNotEmpty)
+                        ? asyncSnapshot.data[1]
+                        : []),
+                    ((asyncSnapshot.data[2].toString().isNotEmpty &&
+                            asyncSnapshot.data[2].toString() != "" &&
+                            asyncSnapshot.data[2].toString() != " ")
+                        ? asyncSnapshot.data[2].toString()
                         : "Tap to Create/Join"))
                 .getHomeUI();
           } else {

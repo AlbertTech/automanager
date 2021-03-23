@@ -20,6 +20,7 @@ class ItemDisplayUI {
       this.txtMyDescriptionValue,
       this.mySuggestions,
       this.myNewSuggestion,
+      this.myDescriptions,
       this.mySelectedItemValues,
       this.myFocus,
       this.isRefreshed,
@@ -42,9 +43,11 @@ class ItemDisplayUI {
   final TextEditingController txtMyDescriptionName;
   final Map<String, String> mySuggestions;
   final List<String> myNewSuggestion;
+  final Map<String, dynamic> myDescriptions;
   final List<String> mySelectedItemValues;
   final FocusNode myFocus;
   bool isRefreshed;
+  bool isChangeMade = false;
 
   Widget getItemDisplayUI() {
     requestFocusIfRefreshed();
@@ -174,7 +177,10 @@ class ItemDisplayUI {
                     width: mediaSize.width * .37,
                     height: mediaSize.height * .2,
                     child: ListView.builder(
-                        itemCount: 2 + 1,
+                        itemCount: ((myDescriptions.length != null &&
+                                myDescriptions.length > 0)
+                            ? myDescriptions.length + 1
+                            : 1),
                         itemBuilder: (BuildContext ctx, int index) {
                           if (index == 0) {
                             return Container(
@@ -222,7 +228,7 @@ class ItemDisplayUI {
                                       child: Container(
                                     width: mediaSize.width * .1,
                                     child: AutoSizeText(
-                                      "Variation",
+                                      myDescriptions.keys.toList()[index - 1],
                                       style: TextStyle(color: myLightDarkColor),
                                       maxFontSize: 14,
                                       minFontSize: 12,
@@ -234,7 +240,7 @@ class ItemDisplayUI {
                                       child: Container(
                                     width: mediaSize.width * .1,
                                     child: AutoSizeText(
-                                      "value",
+                                      myDescriptions.values.toList()[index - 1],
                                       style: TextStyle(color: myLightDarkColor),
                                       maxFontSize: 14,
                                       minFontSize: 12,
@@ -317,6 +323,9 @@ class ItemDisplayUI {
                                             offset: Offset(0, 3))
                                       ]),
                                   child: TextFormField(
+                                    onChanged: (String changeValue) {
+                                      isChangeMade = true;
+                                    },
                                     controller: txtMyStockName,
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
@@ -367,6 +376,9 @@ class ItemDisplayUI {
                                             offset: Offset(0, 3))
                                       ]),
                                   child: TextFormField(
+                                    onChanged: (String changeValue) {
+                                      isChangeMade = true;
+                                    },
                                     controller: txtMyStockQuantity,
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.only(
@@ -550,6 +562,9 @@ class ItemDisplayUI {
                                           offset: Offset(0, 3))
                                     ]),
                                 child: TextFormField(
+                                  onChanged: (String changeValue) {
+                                    isChangeMade = true;
+                                  },
                                   controller: txtMyStockCategory,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
@@ -599,6 +614,9 @@ class ItemDisplayUI {
                                           offset: Offset(0, 3))
                                     ]),
                                 child: TextFormField(
+                                  onChanged: (String changeValue) {
+                                    isChangeMade = true;
+                                  },
                                   controller: txtMyStockPriceEach,
                                   decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
@@ -675,7 +693,31 @@ class ItemDisplayUI {
                   ],
                 ),
               ),
-            )
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: GestureDetector(
+                  onTap: () async {
+                    await updateThisItem();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(
+                        (mediaSize.width + mediaSize.height) * .01),
+                    width: mediaSize.width * .125,
+                    height: mediaSize.height * .075,
+                    decoration: BoxDecoration(
+                      color: myDeepOrangeColor,
+                      borderRadius: BorderRadius.all(Radius.circular(
+                          (mediaSize.width + mediaSize.height) * .1)),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.save,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )),
+            ),
           ])),
     );
   }
@@ -686,16 +728,17 @@ class ItemDisplayUI {
             this.mySuggestions, this.myNewSuggestion)
         .then((value) {
       isRefreshed = true;
+      isChangeMade = false;
     });
   }
 
   Future<void> displaySelectedSuggestion(String mySelectedText) async {
-    print("my selected text: " + mySelectedText);
     await itemDisplayViewModel
         .anItemSelected(mySelectedText, this.updateMySelectedItem,
-            this.mySelectedItemValues, this.context)
+            this.mySelectedItemValues, this.myDescriptions, this.context)
         .then((value) async {
       isRefreshed = false;
+      isChangeMade = false;
     });
   }
 
@@ -706,7 +749,11 @@ class ItemDisplayUI {
   }
 
   void displayMyChosenSuggestion() {
-    if (mySelectedItemValues.length > 0) {
+    print("my selected text desc length: " +
+        (myDescriptions.length != null && myDescriptions.length > 0
+            ? myDescriptions.length.toString()
+            : "0"));
+    if (mySelectedItemValues.length > 0 && isChangeMade == false) {
       txtMyStockName.text =
           mySelectedItemValues[itemDisplayViewModel.myListIndexStockName];
       txtMyStockCategory.text =
@@ -721,5 +768,18 @@ class ItemDisplayUI {
   void tapOutsideOfFocus() {
     isRefreshed = false;
     FocusScope.of(context).unfocus();
+  }
+
+  Future<void> updateThisItem() async {
+    if (isChangeMade == true) {
+      await itemDisplayViewModel.updateThisItem(
+          [txtMyStockName.text,
+          txtMyStockCategory.text,
+          txtMyStockQuantity.text,
+          txtMyStockPriceEach.text]);
+      print("there is to update");
+    } else {
+      print("there is nothing to update");
+    }
   }
 }

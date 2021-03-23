@@ -1,8 +1,9 @@
-
 import 'package:automanager/resources/myColors.dart';
+import 'package:automanager/utilities/errorTrapTool.dart';
 import 'package:automanager/utilities/myClippers.dart';
 import 'package:automanager/utilities/textFieldFocusUtilities.dart';
 import 'package:automanager/view/registerUI.dart';
+import 'package:automanager/view_models/registerViewModel.dart';
 import 'package:flutter/material.dart';
 
 class RegisterView extends StatefulWidget {
@@ -18,6 +19,11 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController txtPassword;
   TextEditingController txtConfirmPassword;
   GlobalKey formKey;
+  RegisterViewModel registerViewModel;
+  RegisterUI registerUI;
+
+  ErrorTrapTool errorTrapTool;
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +33,24 @@ class _RegisterViewState extends State<RegisterView> {
     txtEmail = new TextEditingController();
     txtPassword = new TextEditingController();
     txtConfirmPassword = new TextEditingController();
-    formKey  = new GlobalKey<FormState>();
+    formKey = new GlobalKey<FormState>();
+    registerViewModel = new RegisterViewModel();
+    errorTrapTool = new ErrorTrapTool();
+    registerUI = new RegisterUI(
+        context,
+        myTextUtility,
+        myColors.colorDeepOrange,
+        myColors.colorLightOrange,
+        myColors.colorLightBlue,
+        MyClippers("RegisterView_1"),
+        MyClippers("RegisterView_2"),
+        txtCompleteName,
+        txtEmail,
+        txtPassword,
+        txtConfirmPassword,
+        formKey,
+        registerViewModel,
+        errorTrapTool);
   }
 
   @override
@@ -46,20 +69,6 @@ class _RegisterViewState extends State<RegisterView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
             resizeToAvoidBottomInset: false,
-            resizeToAvoidBottomPadding: false,
-            body: RegisterUI(
-              context,
-              myTextUtility,
-              myColors.colorDeepOrange,
-              myColors.colorLightOrange,
-              myColors.colorLightBlue,
-              MyClippers("RegisterView_1"),
-              MyClippers("RegisterView_2"),
-              txtCompleteName,
-              txtEmail,
-              txtPassword,
-              txtConfirmPassword,
-              formKey
-            ).getRegisterUI()));
+            body: registerUI.getRegisterUI()));
   }
 }

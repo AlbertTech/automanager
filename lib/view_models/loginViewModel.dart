@@ -1,18 +1,22 @@
 import 'package:automanager/models/loginModel.dart';
 import 'package:automanager/models/userInfoSharedPref.dart';
+import 'package:automanager/utilities/errorTrapTool.dart';
 import 'package:automanager/utilities/myNavigatorUtil.dart';
+import 'package:automanager/view/homeView.dart';
 import 'package:flutter/material.dart';
 
 class LoginViewModel {
   LoginModel loginModel = new LoginModel();
   UserInfoSharedPref sharedPrefUtil = new UserInfoSharedPref();
   MyNavigatorUtil myNavigatorUtil = new MyNavigatorUtil();
+  final ErrorTrapTool errorTrapTool = new ErrorTrapTool();
   String _myUserId = "empty";
   bool _isLoggedIn = false;
   String _myCurrentDatabase = "";
-  List<String> _myDatabaseList = [];
+  Map<String, dynamic> _myDatabaseList = new Map();
   String _myCurrentProfileId = "";
   String _myCurrentDbName = "";
+
   String get myUserId => _myUserId;
 
   set myUserId(String value) {
@@ -31,9 +35,9 @@ class LoginViewModel {
     _myCurrentDatabase = value;
   }
 
-  List<String> get myDatabaseList => _myDatabaseList;
+  Map<String, dynamic> get myDatabaseList => _myDatabaseList;
 
-  set myDatabaseList(List<String> value) {
+  set myDatabaseList(Map<String, dynamic> value) {
     _myDatabaseList = value;
   }
 
@@ -54,6 +58,7 @@ class LoginViewModel {
     await loginModel
         .loginWithEmailPassword(email, password)
         .whenComplete(() async {
+      errorTrapTool.dismissEasyLoading();
       if (loginModel.isLoginSuccessful == true) {
         myUserId = loginModel.loginUid;
         isLoggedIn = true;
@@ -61,10 +66,16 @@ class LoginViewModel {
         myDatabaseList = loginModel.myDatabaseList;
         myCurrentProfileId = loginModel.myCurrentProfileId;
         myCurrentDbName = loginModel.myCurrentDbName;
-        await sharedPrefUtil.setCurrentUser(myUserId, isLoggedIn,
-            myCurrentDatabase, myDatabaseList, myCurrentProfileId,myCurrentDbName);
-        await myNavigatorUtil.navigateNewPage(ctx);
+        await sharedPrefUtil.setCurrentUser(
+            myUserId,
+            isLoggedIn,
+            myCurrentDatabase,
+            myDatabaseList,
+            myCurrentProfileId,
+            myCurrentDbName);
+        myNavigatorUtil.navigateNewPage(ctx, HomeView());
       } else {
+        errorTrapTool.displayErrorMessage(loginModel.errorStatus);
         isLoggedIn = false;
       }
     });
@@ -72,6 +83,7 @@ class LoginViewModel {
 
   Future<void> loginWithFacebook(BuildContext ctx) async {
     await loginModel.loginWithFacebook().then((isSuccessful) async {
+      errorTrapTool.dismissEasyLoading();
       if (isSuccessful == true) {
         myUserId = loginModel.loginUid;
         isLoggedIn = true;
@@ -79,10 +91,16 @@ class LoginViewModel {
         myDatabaseList = loginModel.myDatabaseList;
         myCurrentProfileId = loginModel.myCurrentProfileId;
         myCurrentDbName = loginModel.myCurrentDbName;
-        await sharedPrefUtil.setCurrentUser(myUserId, isLoggedIn,
-            myCurrentDatabase, myDatabaseList, myCurrentProfileId,myCurrentDbName);
-        myNavigatorUtil.navigateNewPage(ctx);
+        await sharedPrefUtil.setCurrentUser(
+            myUserId,
+            isLoggedIn,
+            myCurrentDatabase,
+            myDatabaseList,
+            myCurrentProfileId,
+            myCurrentDbName);
+        myNavigatorUtil.navigateNewPage(ctx, HomeView());
       } else {
+        errorTrapTool.displayErrorMessage(loginModel.errorStatus);
         isLoggedIn = false;
         FocusScope.of(ctx).unfocus();
       }
@@ -91,6 +109,7 @@ class LoginViewModel {
 
   Future<void> loginWithGoogle(BuildContext ctx) async {
     await loginModel.loginWithGoogle().then((isSuccessful) async {
+      errorTrapTool.dismissEasyLoading();
       if (isSuccessful == true) {
         myUserId = loginModel.loginUid;
         isLoggedIn = true;
@@ -98,10 +117,16 @@ class LoginViewModel {
         myDatabaseList = loginModel.myDatabaseList;
         myCurrentProfileId = loginModel.myCurrentProfileId;
         myCurrentDbName = loginModel.myCurrentDbName;
-        await sharedPrefUtil.setCurrentUser(myUserId, isLoggedIn,
-            myCurrentDatabase, myDatabaseList, myCurrentProfileId,myCurrentDbName);
-        myNavigatorUtil.navigateNewPage(ctx);
+        await sharedPrefUtil.setCurrentUser(
+            myUserId,
+            isLoggedIn,
+            myCurrentDatabase,
+            myDatabaseList,
+            myCurrentProfileId,
+            myCurrentDbName);
+        myNavigatorUtil.navigateNewPage(ctx, HomeView());
       } else {
+        errorTrapTool.displayErrorMessage(loginModel.errorStatus);
         isLoggedIn = false;
         FocusScope.of(ctx).unfocus();
       }
@@ -111,4 +136,5 @@ class LoginViewModel {
   Future<void> fireAuthLogOut() {
     return loginModel.logOutEverything();
   }
+
 }

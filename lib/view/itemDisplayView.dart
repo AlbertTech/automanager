@@ -21,6 +21,7 @@ class _ItemDisplayViewState extends State<ItemDisplayView> {
   TextEditingController txtMyDescriptionName;
   TextEditingController txtMyDescriptionValue;
   Map<String, String> mySuggestions;
+  Map<String, dynamic> myDescriptions;
   List<String> myNewSuggestion;
   FocusNode myFocus;
   bool isRefreshed;
@@ -40,6 +41,7 @@ class _ItemDisplayViewState extends State<ItemDisplayView> {
     txtMyDescriptionValue = new TextEditingController();
     mySuggestions = new Map();
     myNewSuggestion = new List();
+    myDescriptions = new Map();
     mySelectedItemValues = new List();
     myFocus = new FocusNode();
     myColors = new MyColors();
@@ -59,6 +61,7 @@ class _ItemDisplayViewState extends State<ItemDisplayView> {
         txtMyDescriptionValue,
         mySuggestions,
         myNewSuggestion,
+        myDescriptions,
         mySelectedItemValues,
         myFocus,
         isRefreshed,
@@ -75,9 +78,13 @@ class _ItemDisplayViewState extends State<ItemDisplayView> {
   }
 
   void updateMySelectedItem(
-      List<String> myViewingList, List<String> myUpdatedList) {
+      List<String> myViewingList,
+      List<String> myUpdatedList,
+      Map myDescriptions,
+      Map myDescriptionsServer) {
     setState(() {
       myViewingList.addAll(myUpdatedList);
+      myDescriptions.addAll(myDescriptionsServer);
     });
   }
 
@@ -87,11 +94,7 @@ class _ItemDisplayViewState extends State<ItemDisplayView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
           resizeToAvoidBottomInset: false,
-          resizeToAvoidBottomPadding: false,
           body: itemDisplayUI.getItemDisplayUI(),
-          floatingActionButton: WidgetForFab(
-                  context, "ItemDisplayView", MyColors().colorDeepOrange)
-              .getWidgetForFab(null),
         ));
   }
 }

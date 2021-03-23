@@ -16,16 +16,18 @@ class MakeSaleReceiptView extends StatefulWidget {
 }
 
 class _MakeSaleReceiptViewState extends State<MakeSaleReceiptView> {
-
-
   _MakeSaleReceiptViewState(this.stockId, this.categoryId, this.stockName);
 
   final String stockId;
   final String categoryId;
   final String stockName;
-  Map<int, String> myDropDownValues;
+  Map<int, String> myGenderDropDownValues;
+  Map<int, String> myPaymentDropDownValues;
+  Map<int, String> myOrderTypeDropDownValues;
   MakeSaleReceiptViewModel makeSaleReceiptViewModel;
-  int myDropDownSelectedValue;
+  int myGenderDropDownSelectedValue;
+  int myOrderTypeDropDownSelectedValue;
+  int myPaymentDropDownSelectedValue;
   TextEditingController txtOrderType;
   TextEditingController txtOrderDate;
   TextEditingController txtCustomerName;
@@ -40,11 +42,25 @@ class _MakeSaleReceiptViewState extends State<MakeSaleReceiptView> {
 
   @override
   void initState() {
-    myDropDownSelectedValue = 0;
-    myDropDownValues = {
+    myGenderDropDownSelectedValue = 0;
+    myOrderTypeDropDownSelectedValue = 0;
+    myPaymentDropDownSelectedValue = 0;
+    myGenderDropDownValues = {0: "Select", 1: "Male", 2: "Female", 3: "Others"};
+    myPaymentDropDownValues = {
       0: "Select",
-      1: "Male",
-      2: "Female",
+      1: "On Hand - Cash",
+      2: "On Hand - Cheque",
+      3: "Interest",
+      4: "Savings Card",
+      5: "Debit Card",
+      6: "Credit Card",
+      7: "E-cash",
+      8: "Others"
+    };
+    myOrderTypeDropDownValues = {
+      0: "Select",
+      1: "Deliver",
+      2: "Pick-up",
       3: "Others"
     };
     makeSaleReceiptViewModel = new MakeSaleReceiptViewModel();
@@ -75,8 +91,12 @@ class _MakeSaleReceiptViewState extends State<MakeSaleReceiptView> {
         this.categoryId,
         this.stockName,
         this.callBackDropDown,
-        this.myDropDownSelectedValue,
-    this.myDropDownValues);
+        this.myGenderDropDownSelectedValue,
+        this.myOrderTypeDropDownSelectedValue,
+        this.myPaymentDropDownSelectedValue,
+        this.myGenderDropDownValues,
+        this.myOrderTypeDropDownValues,
+        this.myPaymentDropDownValues);
     super.initState();
   }
 
@@ -90,7 +110,6 @@ class _MakeSaleReceiptViewState extends State<MakeSaleReceiptView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
           resizeToAvoidBottomInset: false,
-          resizeToAvoidBottomPadding: false,
           body: makeSaleReceiptUI.getMakeSaleReceiptUI(),
         ));
   }

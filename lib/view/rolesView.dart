@@ -15,7 +15,6 @@ class _RolesViewState extends State<RolesView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
             resizeToAvoidBottomInset: false,
-            resizeToAvoidBottomPadding: false,
             body: RolesUI(
                     context,
                     MyColors().colorLightBlue,

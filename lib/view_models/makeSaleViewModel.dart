@@ -10,33 +10,32 @@ class MakeSaleViewModel {
   final UserInfoSharedPref sharedPrefUtil = new UserInfoSharedPref();
 
   Map<String, String> mySuggestions = new Map();
-  Map<String, String> myCategoriesOfSuggestions = new Map();
-
   List<String> mySelectedItemValues = new List();
+  List<List<String>> mySuggestionsDescription = new List();
 
   final int myListIndexStockId = 0,
-      myListIndexCategoryId = 1,
-      myListIndexStockName = 2,
-      myListIndexStockCategory = 3,
-      myListIndexStockQuantity = 4,
-      myListIndexStockPriceEach = 5,
-      myListIndexStockImageFile = 6;
+      myListIndexStockName = 1,
+      myListIndexStockCategory = 2,
+      myListIndexStockQuantity = 3,
+      myListIndexStockPriceEach = 4,
+      myListIndexStockImageFile = 5;
 
   Future<void> commandSearchForSuggestions(
       String txtSearchBar,
       BuildContext ctx,
       Function myMethod,
       Map<String, String> mySuggestions,
-      List<String> myNewSuggestion) async {
+      List<String> mySuggestionListDisplay,
+      List<List<String>> mySuggestionsDescription) async {
     if (textValidatorUtility.checkTextIfNotEmptyAndNotNull(txtSearchBar) ==
         true) {
       await Future.delayed(const Duration(seconds: 1)).then((value) async {
-        print("now finding suggestions: " +txtSearchBar);
+        print("now finding suggestions: " + txtSearchBar);
         await sharedPrefUtil
             .getIsCurrentUserLoggedIn()
             .then((currentUserLoggedIn) async {
           await sharedPrefUtil
-              .getIsCurrentDatabase()
+              .getIsCurrentDatabaseId()
               .then((currentDatabaseId) async {
             await makeSaleModel
                 .findMySuggestions(
@@ -44,12 +43,17 @@ class MakeSaleViewModel {
                 .then((isSuccessful) {
               if (isSuccessful = true) {
                 mySuggestions.clear();
-                myNewSuggestion.clear();
+                mySuggestionListDisplay.clear();
                 this.mySuggestions.addAll(makeSaleModel.mySuggestions);
                 this
-                    .myCategoriesOfSuggestions
-                    .addAll(makeSaleModel.myCategoriesOfSuggestions);
-                myMethod(mySuggestions, this.mySuggestions, myNewSuggestion);
+                    .mySuggestionsDescription
+                    .addAll(makeSaleModel.mySuggestionsDescription);
+                myMethod(
+                    mySuggestions,
+                    this.mySuggestions,
+                    mySuggestionListDisplay,
+                    mySuggestionsDescription,
+                    this.mySuggestionsDescription);
                 FocusScope.of(ctx).unfocus();
                 print("my suggestions: " + mySuggestions.toString());
               } else {
@@ -80,26 +84,18 @@ class MakeSaleViewModel {
 
     if (textValidatorUtility.checkTextIfNotEmptyAndNotNull(mySelectedText) ==
         true) {
-      await sharedPrefUtil.getIsCurrentDatabase().then((currentDatabaseId) {
-        mySuggestions.forEach((stockId_1, myStockName) {
-          if (mySelectedText.toLowerCase() == myStockName.toLowerCase()) {
-            myCategoriesOfSuggestions.forEach((stockId_2, categoryId) async {
-              if (stockId_1 == stockId_2) {
-                print("my key category and suggestion: " +
-                    categoryId +
-                    " " +
-                    stockId_2);
-                await makeSaleModel
-                    .displayItemOnSelection(
-                        categoryId, stockId_2, currentDatabaseId)
-                    .then((myList) {
-                  if (myList.length > 0) {
-                    mySelectedItemValues.clear();
-                    this.mySelectedItemValues.clear();
-                    this.mySelectedItemValues.addAll(myList);
-                    myMethod(mySelectedItemValues, this.mySelectedItemValues);
-                  }
-                });
+      await sharedPrefUtil.getIsCurrentDatabaseId().then((currentDatabaseId) {
+        mySuggestions.forEach((stockId, myStockName) async {
+          if (myStockName.toLowerCase() == mySelectedText.toLowerCase()) {
+            print("chosen value: " + stockId + " " + myStockName);
+            await makeSaleModel
+                .displayItemOnSelection(stockId, currentDatabaseId)
+                .then((myList) {
+              if (myList.length > 0) {
+                mySelectedItemValues.clear();
+                this.mySelectedItemValues.clear();
+                this.mySelectedItemValues.addAll(myList);
+                myMethod(mySelectedItemValues, this.mySelectedItemValues);
               }
             });
           }
@@ -108,5 +104,10 @@ class MakeSaleViewModel {
         print("error on finding current databse id: " + onError.toString());
       });
     }
+  }
+
+  Future<Widget> prepareToLoadImage(
+      BuildContext context, String mySelectedItemValue) async {
+    return await makeSaleModel.loadImage(context, mySelectedItemValue);
   }
 }

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class MyNavigatorUtil {
 
-  navigateNewPage(BuildContext context) {
+  navigateNewPage(BuildContext context, var placeToGo) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => HomeView()),
+      MaterialPageRoute(builder: (BuildContext context) => placeToGo),
     );
   }
 

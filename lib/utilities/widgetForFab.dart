@@ -18,13 +18,7 @@ class WidgetForFab {
               if (mySelectedItemValues != null &&
                   mySelectedItemValues.isNotEmpty) {
                 print("my list is nnull" + mySelectedItemValues.toString());
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => MakeSaleReceiptView(
-                            mySelectedItemValues[0],
-                            mySelectedItemValues[1],
-                            mySelectedItemValues[2])));
+
               } else {
                 showDialog(
                     context: this.context,

@@ -1,6 +1,10 @@
 import 'package:automanager/models/addStockModel.dart';
 import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/utilities/textValidatorUtility.dart';
+import 'dart:io';
+import 'dart:async';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class AddStockViewModel {
   AddStockModel addStockModel = new AddStockModel();
@@ -9,36 +13,21 @@ class AddStockViewModel {
   List<String> mySuggestionCategory = new List();
   bool isUpdated = false;
 
-  Future<void> updateMyCategorySuggestions(String stockCategory) async {
-    sharedPrefUtil.getIsCurrentDatabase().then((currentDatabaseUid) async {
-      await addStockModel
-          .findMyCategories(stockCategory, currentDatabaseUid)
-          .then((foundCategoryValues) {
-        mySuggestionCategory.addAll(addStockModel.myCategories.values.toList());
-        isUpdated = true;
-      }).catchError((onError) {
-        print("error on finding my update category suggestions: " +
-            onError.toString());
-      });
-    }).catchError((onError) {
-      print("error on getting current database: " + onError.toString());
-    });
-  }
-
   Future<void> addStock(
       String stockName,
-      stockCategory,
-      stockQuantity,
-      stockPriceEach,
-      stockDateOrder,
-      stockDateArrival,
-      stockDistributor,
-      Map myMapDesc) async {
+      String stockCategory,
+      String stockQuantity,
+      String stockPriceEach,
+      String stockDateOrder,
+      String stockDateArrival,
+      String stockDistributor,
+      Map myMapDesc,
+      File myImageFile) async {
     await textValidatorUtility.checkIfAllTextNotEmptyAndNotNull([
       stockName,
       stockCategory,
       stockQuantity,
-      stockPriceEach,
+      stockPriceEach
     ]).then((value) async {
       if (value == true) {
         print("====checked all text is not empty=======");
@@ -58,7 +47,7 @@ class AddStockViewModel {
                   .then((sharedPrefUtilUid) async {
                 print("====checked sharedPref getUserId=======");
                 await sharedPrefUtil
-                    .getIsCurrentDatabase()
+                    .getIsCurrentDatabaseId()
                     .then((currentDatabaseUid) async {
                   await addStockModel
                       .addStock(
@@ -71,21 +60,28 @@ class AddStockViewModel {
                           stockDateOrder,
                           stockDateArrival,
                           stockDistributor,
-                          myMapDesc)
-                      .catchError((onError) {
+                          myMapDesc,
+                          myImageFile)
+                      .then((value) {
+                    return EasyLoading.showInfo("Success");
+                  }).catchError((onError) {
                     print("my user id error with fireauth: " +
                         onError.toString());
+                    return EasyLoading.showError("Error, please retry");
                   });
                 }).catchError((onError) {
                   print(
                       "error getting current database: " + onError.toString());
+                  return EasyLoading.showError("Error, please retry");
                 });
               }).catchError((onError) {
                 print("error on getting userId shared pref: " +
                     onError.toString());
+                return EasyLoading.showError("Error, please retry");
               });
             } else {
               print("====> no userLoggedIn");
+              return EasyLoading.showError("Error, please retry");
             }
           }).catchError((onError) {
             print("error on getting isCurrentUserLoggedIn: " +
@@ -95,7 +91,13 @@ class AddStockViewModel {
           print("error on checking my numbers: " + onError.toString());
         });
       } else {
-        print("all variables not inputted");
+        return EasyLoading.showInfo(
+            "Please fill\n\n"
+            "*stock name\n"
+            "*category\n"
+            "*quantity\n"
+            "*price each",
+            duration: Duration(seconds: 3));
       }
     });
   }

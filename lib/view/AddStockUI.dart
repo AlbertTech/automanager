@@ -1,11 +1,12 @@
-import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:automanager/models/userInfoSharedPref.dart';
 import 'package:automanager/utilities/textFieldFocusUtilities.dart';
 import 'package:automanager/view_models/addStockViewModel.dart';
 import 'package:flutter/material.dart';
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:async';
 
 class AddStockUI {
   AddStockUI(
@@ -29,6 +30,7 @@ class AddStockUI {
       this.txtPrice,
       this.myDeepOrangeColor,
       this.myLightDarkColor,
+      this.myLightBlueColor,
       this.imageFile);
 
   final BuildContext context;
@@ -50,6 +52,7 @@ class AddStockUI {
   final TextEditingController txtPrice;
   final Color myDeepOrangeColor;
   final Color myLightDarkColor;
+  final Color myLightBlueColor;
   final List<String> myCategorySuggestions;
   File imageFile;
 
@@ -252,6 +255,14 @@ class AddStockUI {
                                   ),
                                   Expanded(
                                     child: TextFormField(
+                                      onTap: () {
+                                        textFieldFocusUtilities.textFocus =
+                                            true;
+                                      },
+                                      onFieldSubmitted: (value) {
+                                        textFieldFocusUtilities.textFocus =
+                                            false;
+                                      },
                                       controller: txtDateOrder,
                                       decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(0),
@@ -334,6 +345,14 @@ class AddStockUI {
                                   ),
                                   Expanded(
                                     child: TextFormField(
+                                      onTap: () {
+                                        textFieldFocusUtilities.textFocus =
+                                            true;
+                                      },
+                                      onFieldSubmitted: (value) {
+                                        textFieldFocusUtilities.textFocus =
+                                            false;
+                                      },
                                       controller: txtDateArrival,
                                       decoration: InputDecoration(
                                           contentPadding: EdgeInsets.all(0),
@@ -478,6 +497,8 @@ class AddStockUI {
                                           myMapDesc,
                                           txtDescriptionName.text,
                                           txtDescriptionValue.text);
+                                      txtDescriptionName.text = "";
+                                      txtDescriptionValue.text = "";
 
                                       print("my values" +
                                           myMapDesc.values.toList().toString());
@@ -626,6 +647,12 @@ class AddStockUI {
                                       offset: Offset(0, 3))
                                 ]),
                             child: TextFormField(
+                              onTap: () {
+                                textFieldFocusUtilities.textFocus = true;
+                              },
+                              onFieldSubmitted: (value) {
+                                textFieldFocusUtilities.textFocus = false;
+                              },
                               controller: txtStockName,
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(0),
@@ -656,68 +683,42 @@ class AddStockUI {
                             alignment: Alignment.bottomLeft,
                           ),
                           Container(
-                            height: mediaSize.height * .045,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                                boxShadow: <BoxShadow>[
-                                  BoxShadow(
-                                      color: Colors.black.withOpacity(0.18),
-                                      spreadRadius: 1,
-                                      blurRadius: 6,
-                                      offset: Offset(0, 3)),
-                                ]),
-                            child: AutoCompleteTextField(
-                              onFocusChanged: (clicked) async {
-                                if (clicked == true) {
+                              height: mediaSize.height * .045,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.18),
+                                        spreadRadius: 1,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 3)),
+                                  ]),
+                              child: TextFormField(
+                                onTap: () {
                                   textFieldFocusUtilities.textFocus = true;
-                                  if (addStockViewModel.isUpdated == false) {
-                                    await updateMyCategories();
-                                  }
-                                } else {
-                                  print("i have been let gone");
+                                },
+                                onFieldSubmitted: (value) {
                                   textFieldFocusUtilities.textFocus = false;
-                                }
-                              },
-                              clearOnSubmit: false,
-                              controller: txtCategory,
-                              suggestions: myCategorySuggestions,
-                              decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(0),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(0)),
-                                      borderSide: BorderSide(
-                                          color: Colors.transparent)),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(0)),
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
-                                  )),
-                              itemFilter: (item, query) {
-                                return item
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(query.toString().toLowerCase());
-                              },
-                              itemSorter: (a, b) {
-                                return a
-                                    .toString()
-                                    .toLowerCase()
-                                    .compareTo(b.toString().toLowerCase());
-                              },
-                              itemSubmitted: (value) {
-                                txtCategory.text = value;
-                              },
-                              itemBuilder: (context, item) {
-                                return Container(
-                                  child: Text(item),
-                                );
-                              },
-                            ),
-                          ),
+                                },
+                                controller: txtCategory,
+                                decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(0),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)))),
+                                keyboardType: TextInputType.text,
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16),
+                              )),
                           Spacer(),
                           Align(
                             child: AutoSizeText(
@@ -770,7 +771,7 @@ class AddStockUI {
                           Spacer(),
                           Align(
                             child: AutoSizeText(
-                              "  Price",
+                              "  Price each",
                               style: TextStyle(color: myLightDarkColor),
                               maxFontSize: 16,
                               minFontSize: 14,
@@ -921,39 +922,61 @@ class AddStockUI {
   Future<void> openGallery() async {
     // ignore: invalid_use_of_visible_for_testing_member
     final PickedFile pickedFile =
-        await ImagePicker().getImage(source: ImageSource.gallery);
-    await callBackImages(true, imageFile, pickedFile);
+        await ImagePicker().getImage(source: ImageSource.gallery).then((value) {
+      imageFile = new File(value.path);
+      this.callBackImages(imageFile);
+      return value;
+    });
     print('my path: ' + pickedFile.path);
-    print('my path image file: ' + imageFile.path);
   }
 
   Widget myImage(Size mediaSize) {
-    if (imageFile != null) {
-      print('my path: ' + imageFile.path);
-      return Image.file(
-        imageFile,
+    if (imageFile.path.isNotEmpty && imageFile.path != "") {
+      return new Container(
         width: mediaSize.width * .37,
         height: mediaSize.height * .2,
-        filterQuality: FilterQuality.high,
-        fit: BoxFit.fill,
+        decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: new Image.file(
+          imageFile,
+          filterQuality: FilterQuality.high,
+          fit: BoxFit.contain,
+        ),
       );
     } else {
-      return Image.asset(
-        'assets/images/image_add_image.png',
+      return new Container(
         width: mediaSize.width * .37,
         height: mediaSize.height * .2,
-        filterQuality: FilterQuality.high,
-        fit: BoxFit.fill,
+        decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+        ),
+        child: new Image.asset(
+          'assets/images/image_add_image.png',
+          filterQuality: FilterQuality.high,
+          fit: BoxFit.contain,
+        ),
       );
     }
   }
 
-  Future<void> updateMyCategories() async {
-    await addStockViewModel.updateMyCategorySuggestions(txtCategory.text);
-    myCategorySuggestions.addAll(addStockViewModel.mySuggestionCategory);
-  }
-
   Future<void> addAnItem() async {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..textStyle = TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
+      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+      ..maskType = EasyLoadingMaskType.clear
+      ..indicatorSize = 50
+      ..radius = 10.0
+      ..backgroundColor = myLightBlueColor
+      ..indicatorColor = Colors.white
+      ..textColor = Colors.white
+      ..progressColor = Colors.white
+      ..userInteractions = false
+      ..dismissOnTap = false;
+
+    EasyLoading.show(status: "loading");
+
     await new AddStockViewModel()
         .addStock(
             txtStockName.text,
@@ -963,7 +986,8 @@ class AddStockUI {
             txtDateOrder.text,
             txtDateArrival.text,
             txtDistributor.text,
-            myMapDesc)
+            myMapDesc,
+            imageFile)
         .then((value) {
       txtStockName.clear();
       txtCategory.clear();
@@ -976,7 +1000,8 @@ class AddStockUI {
       txtDescriptionValue.clear();
       myCategorySuggestions.clear();
       myMapDesc.clear();
-      imageFile = null;
+      imageFile = new File("");
+      callBackMapDesc(null, null, null);
     });
   }
 

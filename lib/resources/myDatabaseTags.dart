@@ -2,6 +2,7 @@ class MyDatabaseTags{
   final String allDatabaseTag = "Database";
   final String myDatabaseInventoryTag = "Inventory";
   final String myDatabaseCategoryTag = "Category";
+  final String myInventoryCategoriesTag ="Database_category";
   final String myDatabaseCategoryMerchandiseTag = "Merchandise";
   final String myStockDescriptionTag = "Descriptions";
   final String myStockNameTag = "Stock_name";
@@ -11,6 +12,8 @@ class MyDatabaseTags{
   final String myStockBoughtFrom = "Distributor";
   final String myStockOrderedDate = "Order_date";
   final String myStockDateArrival = "Order_arrival";
+  final String myStockImageCacheTag = "Stock_image";
+
 
 
   final String myDatabaseNameTag = "Database_name";

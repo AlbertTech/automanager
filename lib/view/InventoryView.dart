@@ -14,7 +14,6 @@ class _InventoryViewState extends State<InventoryView> {
         theme: (ThemeData(brightness: Brightness.light)),
         home: Scaffold(
             resizeToAvoidBottomInset: false,
-            resizeToAvoidBottomPadding: false,
             body:
             InventoryUI(
                 context,

@@ -11,7 +11,8 @@ class ItemDisplayModel {
 
   bool isSuccessful;
 
-  Future<bool> getMySuggestions(String mySearch, String myCurrentDatabaseUid) async {
+  Future<bool> getMySuggestions(
+      String mySearch, String myCurrentDatabaseUid) async {
     isSuccessful = false;
     await firebaseFirestore
         .collection(myDatabaseTags.allDatabaseTag)
@@ -79,9 +80,9 @@ class ItemDisplayModel {
     return isSuccessful;
   }
 
-  Future<List<String>> displayItemOnSelection(
+  Future<List<dynamic>> displayItemOnSelection(
       String categoryId, String stockId, String myCurrentDatabaseUid) async {
-    List<String> myList;
+    List<dynamic> myList;
     await firebaseFirestore
         .collection(myDatabaseTags.allDatabaseTag)
         .doc(myCurrentDatabaseUid)
@@ -90,20 +91,54 @@ class ItemDisplayModel {
         .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
         .doc(stockId)
         .get()
-        .then((myStock) {
-      myList = [
-        stockId,
-        categoryId,
-        myStock.get(myDatabaseTags.myStockNameTag),
-        myStock.get(myDatabaseTags.myStockCategoryTag),
-        myStock.get(myDatabaseTags.myStockQuantityTag).toString(),
-        myStock.get(myDatabaseTags.myStockPriceTag).toString(),
-        ""
-      ];
+        .then((myStock) async {
+      await firebaseFirestore
+          .collection(myDatabaseTags.allDatabaseTag)
+          .doc(myCurrentDatabaseUid)
+          .collection(myDatabaseTags.myDatabaseInventoryTag)
+          .doc(categoryId)
+          .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+          .doc(stockId)
+          .collection(myDatabaseTags.myStockDescriptionTag)
+          .get()
+          .then((value) {
+        return myList = [
+          stockId,
+          categoryId,
+          myStock.get(myDatabaseTags.myStockNameTag),
+          myStock.get(myDatabaseTags.myStockCategoryTag),
+          myStock.get(myDatabaseTags.myStockQuantityTag).toString(),
+          myStock.get(myDatabaseTags.myStockPriceTag).toString(),
+          value.docs[0].data()
+        ];
+      }).catchError((onError) {
+        print("error on getting desc info stock: " + onError.toString());
+        myList = [null];
+      });
     }).catchError((onError) {
-      print("error on display stocks: " + onError.toString());
+      print("error on getting info stock: " + onError.toString());
       myList = [null];
     });
     return myList;
+  }
+
+  Future<bool> updateAnItem(Map<String, dynamic> myItemToUpdate,
+      String myCurrentDatabaseId, String myStockId, String myCategoryId) async {
+    isSuccessful = false;
+    await firebaseFirestore
+        .collection(myDatabaseTags.allDatabaseTag)
+        .doc(myCurrentDatabaseId)
+        .collection(myDatabaseTags.myDatabaseInventoryTag)
+        .doc(myCategoryId)
+        .collection(myDatabaseTags.myDatabaseCategoryMerchandiseTag)
+        .doc(myStockId)
+        .update(myItemToUpdate)
+        .then((value) {
+      isSuccessful = true;
+    }).catchError((onError) {
+      print("error on updating item: " + onError.toString());
+      isSuccessful = false;
+    }).timeout(Duration(seconds: 5));
+    return isSuccessful;
   }
 }

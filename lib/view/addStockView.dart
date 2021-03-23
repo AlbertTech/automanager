@@ -9,7 +9,7 @@ import 'package:automanager/utilities/widgetForFab.dart';
 import 'package:automanager/view/AddStockUI.dart';
 import 'package:automanager/view_models/addStockViewModel.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class AddStockView extends StatefulWidget {
   @override
@@ -39,6 +39,7 @@ class _AddStockViewState extends State<AddStockView> {
 
   @override
   void initState() {
+    imageFile = new File("");
     addStockViewModel = new AddStockViewModel();
     textFieldFocusUtilities = new TextFieldFocusUtilities();
     myMapDesc = new Map();
@@ -80,6 +81,7 @@ class _AddStockViewState extends State<AddStockView> {
         txtPrice,
         myColors.colorDeepOrange,
         myColors.colorLightdark,
+        myColors.colorLightBlue,
         imageFile);
     super.initState();
   }
@@ -90,18 +92,19 @@ class _AddStockViewState extends State<AddStockView> {
     super.dispose();
   }
 
-  void callBackImages(bool isGallery, File myImageFile, PickedFile pickedFile) {
+  void callBackImages(File myImageFile) {
     setState(() {
-      if (isGallery == true) {
-        print("making connection");
-        myImageFile = new File(pickedFile.path);
-      } else {}
+      print("making connection");
+      this.imageFile = myImageFile;
+      print("my image file path: " + myImageFile.path);
     });
   }
 
   void callBackMapDesc(Map<String, String> myMap, String myKey, myValue) {
     setState(() {
-      myMap.addAll({myKey: myValue});
+      if (myMap != null) {
+        myMap.addAll({myKey: myValue});
+      } else {}
     });
   }
 
@@ -111,7 +114,6 @@ class _AddStockViewState extends State<AddStockView> {
       theme: (ThemeData(brightness: Brightness.light)),
       home: Scaffold(
         resizeToAvoidBottomInset: false,
-        resizeToAvoidBottomPadding: false,
         body: addStockUI.getAddStockUI(),
       ),
     );

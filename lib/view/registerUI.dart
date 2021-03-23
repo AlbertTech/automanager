@@ -1,24 +1,26 @@
+import 'package:automanager/utilities/errorTrapTool.dart';
 import 'package:automanager/utilities/textFieldFocusUtilities.dart';
+import 'package:automanager/view_models/registerViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
 class RegisterUI {
   RegisterUI(
-    this.context,
-    this.myTextUtility,
-    this.myColorDeepOrange,
-    this.myColorLightOrange,
-    this.myLightBlueColor,
-    this.myClipper_1,
-    this.myClipper_2,
-    this.controllerCompleteName,
-    this.controllerEmail,
-    this.controllerPassword,
-    this.controllerConfirmPassword,
-    this.formKey,
-  );
+      this.context,
+      this.myTextUtility,
+      this.myColorDeepOrange,
+      this.myColorLightOrange,
+      this.myLightBlueColor,
+      this.myClipper_1,
+      this.myClipper_2,
+      this.controllerCompleteName,
+      this.controllerEmail,
+      this.controllerPassword,
+      this.controllerConfirmPassword,
+      this.formKey,
+      this.registerViewModel,
+      this.errorTrapTool);
 
   final BuildContext context;
   final TextFieldFocusUtilities myTextUtility;
@@ -34,28 +36,17 @@ class RegisterUI {
   final TextEditingController controllerConfirmPassword;
 
   final GlobalKey<FormState> formKey;
+  final RegisterViewModel registerViewModel;
 
-  Future<void> _registerEmailPassword(
-      String completeName, email, password, confirmPassword) async {
-    if (password == confirmPassword) {
-      FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) async {
-        await FirebaseFirestore.instance.collection("Users").add({
-          "Complete name": completeName,
-          "Email": email,
-          "userId": value.user.uid.toString(),
-        }).whenComplete(() => Navigator.pop(context));
-      }).timeout(Duration(milliseconds: 5000), onTimeout: () {
-        print("Timeout");
-      }).catchError((onError) {
-        print("erorr acc auth: " + onError.toString());
-      });
-    } else {}
+  final ErrorTrapTool errorTrapTool;
+
+  Future<void> _registerEmailPassword(String completeName, String email,
+      String password, String confirmPassword, BuildContext ctx) async {
+    await registerViewModel.prepareCreationWithEmailPassword(
+        completeName, email, password, confirmPassword, ctx);
   }
 
   Widget getRegisterUI() {
-    print("MytextFocus: " + myTextUtility.textFocus.toString());
     final mediaSize = MediaQuery.of(context).size;
     return GestureDetector(
         onTap: () {
@@ -116,6 +107,7 @@ class RegisterUI {
                               myTextUtility.textFocus = true;
                             },
                             decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(0),
                                 focusedBorder: OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: Colors.transparent),
@@ -126,12 +118,11 @@ class RegisterUI {
                                         BorderSide(color: Colors.transparent),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(13))),
-                                hintStyle: TextStyle(color: Colors.black87),
                                 prefixIcon: Icon(
                                   Icons.person,
                                   color: Colors.black54,
                                 ),
-                                labelText: "Complete name",
+                                hintText: "Complete name",
                                 filled: true,
                                 fillColor: myColorLightOrange),
                             keyboardType: TextInputType.text,
@@ -168,6 +159,7 @@ class RegisterUI {
                               myTextUtility.textFocus = true;
                             },
                             decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(0),
                                 focusedBorder: OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: Colors.transparent),
@@ -178,12 +170,11 @@ class RegisterUI {
                                         BorderSide(color: Colors.transparent),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(13))),
-                                hintStyle: TextStyle(color: Colors.black87),
                                 prefixIcon: Icon(
                                   Icons.email,
                                   color: Colors.black54,
                                 ),
-                                labelText: "Email",
+                                hintText: "Email",
                                 filled: true,
                                 fillColor: myColorLightOrange),
                             keyboardType: TextInputType.emailAddress,
@@ -220,6 +211,7 @@ class RegisterUI {
                                 myTextUtility.textFocus = true;
                               },
                               decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(0),
                                   focusedBorder: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.transparent),
@@ -234,7 +226,7 @@ class RegisterUI {
                                     Icons.enhanced_encryption,
                                     color: Colors.black54,
                                   ),
-                                  labelText: "password",
+                                  hintText: "password",
                                   filled: true,
                                   fillColor: myColorLightOrange),
                               obscureText: true,
@@ -272,6 +264,7 @@ class RegisterUI {
                                 myTextUtility.textFocus = true;
                               },
                               decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(0),
                                   focusedBorder: OutlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.transparent),
@@ -286,7 +279,7 @@ class RegisterUI {
                                     Icons.enhanced_encryption,
                                     color: Colors.black54,
                                   ),
-                                  labelText: "Confirm password",
+                                  hintText: "Confirm password",
                                   filled: true,
                                   fillColor: myColorLightOrange),
                               obscureText: true,
@@ -300,11 +293,13 @@ class RegisterUI {
                         children: <Widget>[
                           GestureDetector(
                               onTap: () async {
+                                errorTrapTool.showEasyLoading();
                                 await _registerEmailPassword(
                                     controllerCompleteName.text,
                                     controllerEmail.text,
                                     controllerPassword.text,
-                                    controllerConfirmPassword.text);
+                                    controllerConfirmPassword.text,
+                                    this.context);
                               },
                               child: new Container(
                                   constraints: BoxConstraints(

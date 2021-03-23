@@ -17,7 +17,7 @@ class MakeSaleReceiptViewModel {
       String myCustomerBalance,
       String myCustomerAge,
       String myCustomerGender) async {
-    sharedPrefUtil.getIsCurrentDatabase().then((currentDatabaseId) async {
+    sharedPrefUtil.getIsCurrentDatabaseId().then((currentDatabaseId) async {
       await makeSaleReceiptModel
           .makeASaleReceipt(
               myStockUid,

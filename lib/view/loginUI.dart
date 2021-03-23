@@ -1,11 +1,11 @@
 import 'package:automanager/models/userInfoSharedPref.dart';
+import 'package:automanager/utilities/errorTrapTool.dart';
 import 'package:automanager/utilities/myNavigatorUtil.dart';
 import 'package:automanager/utilities/textFieldFocusUtilities.dart';
 import 'package:automanager/view/registerView.dart';
 import 'package:automanager/view_models/loginViewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
 class LoginUI {
   LoginUI(
       this.sharedPrefUtil,
@@ -17,7 +17,8 @@ class LoginUI {
       this.myColorLightOrange,
       this.myColorDeepOrange,
       this.txtEmail,
-      this.txtPass);
+      this.txtPass,
+      this.errorTrapTool);
 
   final UserInfoSharedPref sharedPrefUtil;
   final LoginViewModel loginViewModel;
@@ -29,8 +30,10 @@ class LoginUI {
   final Color myColorDeepOrange;
   final TextEditingController txtEmail;
   final TextEditingController txtPass;
+  final ErrorTrapTool errorTrapTool;
 
   Widget getLoginUIWidget() {
+    errorTrapTool.myEasyLoadingInit();
     return Builder(builder: (BuildContext context) {
       final mediaSize = MediaQuery.of(context).size;
       return GestureDetector(
@@ -85,10 +88,6 @@ class LoginUI {
                           onTap: () {
                             myTextUtility.textFocus = true;
                           },
-                          /*autovalidate: true,
-                        validator: (value) {
-                          return ValidationUtil.validateEmail(value);
-                        },*/
                           decoration: InputDecoration(
                               contentPadding: EdgeInsets.all(0),
                               focusedBorder: OutlineInputBorder(
@@ -171,6 +170,7 @@ class LoginUI {
                       children: <Widget>[
                         GestureDetector(
                             onTap: () async {
+                              errorTrapTool.showEasyLoading();
                               await loginViewModel.loginWithEmailPassword(
                                   txtEmail.text, txtPass.text, context);
                             },
@@ -248,7 +248,7 @@ class LoginUI {
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
                         onTap: () {
-
+                          print("forgot password clicked");
                         },
                         child: Text(
                           "  Forgot Password?",
@@ -267,6 +267,7 @@ class LoginUI {
                           GestureDetector(
                               onTap: () async {
                                 print("Container clicked - facebook");
+                                errorTrapTool.showEasyLoading();
                                 await loginViewModel.loginWithFacebook(context);
                               },
                               child: new Container(
@@ -299,6 +300,7 @@ class LoginUI {
                           GestureDetector(
                               onTap: () async {
                                 print("google login");
+                                errorTrapTool.showEasyLoading();
                                 await loginViewModel.loginWithGoogle(context);
                               },
                               child: new Container(
@@ -350,4 +352,5 @@ class LoginUI {
       );
     });
   }
+
 }
