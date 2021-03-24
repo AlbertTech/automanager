@@ -27,7 +27,8 @@ class AddStockViewModel {
       stockName,
       stockCategory,
       stockQuantity,
-      stockPriceEach
+      stockPriceEach,
+      myImageFile.path
     ]).then((value) async {
       if (value == true) {
         print("====checked all text is not empty=======");
@@ -65,7 +66,7 @@ class AddStockViewModel {
                       .then((value) {
                     return EasyLoading.showInfo("Success");
                   }).catchError((onError) {
-                    print("my user id error with fireauth: " +
+                    print("error adding data: " +
                         onError.toString());
                     return EasyLoading.showError("Error, please retry");
                   });
@@ -96,7 +97,8 @@ class AddStockViewModel {
             "*stock name\n"
             "*category\n"
             "*quantity\n"
-            "*price each",
+            "*price each\n"
+            "*image",
             duration: Duration(seconds: 3));
       }
     });

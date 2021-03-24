@@ -38,7 +38,7 @@ class ItemDisplayViewModel {
             if (isLoggedIn == true) {
               print("now finding suggestions");
               await itemDisplayModel
-                  .getMySuggestions(mySearch.text, myCurrentDatabaseId)
+                  .findMySuggestions(true, mySearch.text, myCurrentDatabaseId)
                   .then((isSuccessfulFinding) {
                 print("isssuccesful: " + isSuccessfulFinding.toString());
                 if (isSuccessfulFinding == true) {
@@ -76,12 +76,16 @@ class ItemDisplayViewModel {
       Map<String, dynamic> myDescriptions,
       BuildContext ctx) async {
     FocusScope.of(ctx).unfocus();
+    print("item selected");
+    print("my suggestions: "+mySuggestions.toString());
     if (textValidatorUtility.checkTextIfNotEmptyAndNotNull(mySelectedText) ==
         true)
       sharedPrefUtil.getIsCurrentDatabaseId().then((currentDatabaseId) {
         mySuggestions.forEach((stockId_1, myStockName) {
           if (mySelectedText.toLowerCase() == myStockName.toLowerCase()) {
+            print("exact keys and values");
             myCategoriesOfSuggestions.forEach((stockId_2, categoryId) async {
+              print("doing for each");
               if (stockId_1 == stockId_2) {
                 print("my key category and suggestion: " +
                     categoryId +
@@ -89,18 +93,17 @@ class ItemDisplayViewModel {
                     stockId_2);
                 await itemDisplayModel
                     .displayItemOnSelection(
-                        categoryId, stockId_2, currentDatabaseId)
+                        stockId_2, currentDatabaseId)
                     .then((myList) {
                   if (myList.length > 0) {
-                    mySelectedItemValues.clear();
-                    myDescriptions.clear();
+                    print("my list: " + myList[6].toString());
                     this.mySelectedItemValues.clear();
                     this.myDescription.clear();
-                    print("my list: " + myList[6].toString());
+                    mySelectedItemValues.clear();
+                    myDescriptions.clear();
                     this
                         .mySelectedItemValues
                         .addAll(List<String>.from(myList.sublist(0, 6)));
-                    this.myDescription.addAll(myList[6]);
                     updateMySelectedValues(
                         mySelectedItemValues,
                         this.mySelectedItemValues,

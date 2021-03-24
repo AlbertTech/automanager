@@ -38,10 +38,6 @@ class MakeSaleReceiptModel {
                     currentDatabaseId +
                     "/" +
                     myDatabaseTags.myDatabaseInventoryTag +
-                    "/" +
-                    myCategoryStockUid +
-                    "/" +
-                    myDatabaseTags.myDatabaseCategoryMerchandiseTag +
                     "")
                 .doc(myStockUid)
                 .get()
@@ -54,16 +50,13 @@ class MakeSaleReceiptModel {
                         currentDatabaseId +
                         "/" +
                         myDatabaseTags.myDatabaseInventoryTag +
-                        "/" +
-                        myCategoryStockUid +
-                        "/" +
-                        myDatabaseTags.myDatabaseCategoryMerchandiseTag +
                         "")
                     .doc(myStockUid)
                     .update({
                   myDatabaseTags.myStockQuantityTag:
-                      FieldValue.increment(-int.parse(myCustomerQuantity))
-                }).then((value) async {
+                      FieldValue.increment(-int.parse(myCustomerQuantity)),
+                }).then((value) async
+                {
                   await firebaseFirestore
                       .collection("/" +
                           myDatabaseTags.allDatabaseTag +
@@ -80,7 +73,11 @@ class MakeSaleReceiptModel {
                     mySalesTags.salesCustomerNameTag: myCustomerName,
                     mySalesTags.salesCustomerLocationTag: myCustomerLocation,
                     mySalesTags.salesQuantityTag: myCustomerQuantity,
-                    mySalesTags.salesBalanceTag: myCustomerBalance,
+                    mySalesTags.salesBalanceTag: double.parse(myCustomerBalance),
+                    mySalesTags.salesChangeTag:
+                        (double.parse(myCustomerBalance) -
+                            double.parse(myDocumentValue
+                                .get(myDatabaseTags.myStockPriceTag).toString())),
                     mySalesTags.salesAgeTag: myCustomerAge,
                     mySalesTags.salesGenderTag: myCustomerGender
                   }).then((value) {

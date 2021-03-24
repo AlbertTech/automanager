@@ -8,10 +8,10 @@ class ItemDisplayModel {
 
   Map<String, String> mySuggestions = new Map();
   Map<String, String> myCategoriesOfSuggestions = new Map();
-
+  List<List<String>> mySuggestionsDescription = new List();
   bool isSuccessful;
 
-  Future<bool> getMySuggestions(
+/*  Future<bool> getMySuggestions(
       String mySearch, String myCurrentDatabaseUid) async {
     isSuccessful = false;
     await firebaseFirestore
@@ -120,8 +120,69 @@ class ItemDisplayModel {
       myList = [null];
     });
     return myList;
+  }*/
+  Future<bool> findMySuggestions(
+      bool isLoggedIn, String mySearchBar, String currentDatabaseId) async {
+    await firebaseFirestore
+        .collection(myDatabaseTags.allDatabaseTag)
+        .doc(currentDatabaseId)
+        .collection(myDatabaseTags.myDatabaseInventoryTag)
+        .get()
+        .then((myDatabase) {
+      if (myDatabase.docs.length > 0) {
+        mySuggestions.clear();
+        mySuggestionsDescription.clear();
+        myDatabase.docs.forEach((element) {
+          mySuggestions
+              .addAll({element.id: element.get(myDatabaseTags.myStockNameTag)});
+          mySuggestionsDescription.add([
+            element.id,
+            element.get(myDatabaseTags.myStockNameTag),
+            element.get(myDatabaseTags.myStockCategoryTag),
+            element.get(myDatabaseTags.myStockImageCacheTag)
+          ]);
+        });
+
+        isSuccessful = true;
+        print(
+            "my suggestions: " + mySuggestions.toString() + " my categories: ");
+      } else {
+        isSuccessful = false;
+      }
+    }).catchError((onError) {
+      isSuccessful = false;
+      print("error getting this database: " + onError.toString());
+    }).timeout(Duration(seconds: 8), onTimeout: () {
+      isSuccessful = false;
+    });
+    return isSuccessful;
   }
 
+  Future<List<String>> displayItemOnSelection(
+      String stockId, String currentDatabaseId) async {
+    List<String> myList;
+    await firebaseFirestore
+        .collection(myDatabaseTags.allDatabaseTag)
+        .doc(currentDatabaseId)
+        .collection(myDatabaseTags.myDatabaseInventoryTag)
+        .doc(stockId)
+        .get()
+        .then((myStock) {
+      myList = [
+        stockId,
+        myStock.get(myDatabaseTags.myStockNameTag),
+        myStock.get(myDatabaseTags.myStockCategoryTag),
+        myStock.get(myDatabaseTags.myStockQuantityTag).toString(),
+        myStock.get(myDatabaseTags.myStockPriceTag).toString(),
+        myStock.get(myDatabaseTags.myStockImageCacheTag).toString()
+      ];
+      print("my list: "+myList.toString());
+    }).catchError((onError) {
+      print("error on display stocks: " + onError.toString());
+      myList = [null];
+    });
+    return myList;
+  }
   Future<bool> updateAnItem(Map<String, dynamic> myItemToUpdate,
       String myCurrentDatabaseId, String myStockId, String myCategoryId) async {
     isSuccessful = false;

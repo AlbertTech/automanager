@@ -10,4 +10,6 @@ class MySalesTags {
   final String salesBalanceTag = "Customer_balance";
   final String salesAgeTag = "Customer_age";
   final String salesGenderTag = "Customer_gender";
+
+  final String salesChangeTag="Customer_change";
 }

@@ -695,18 +695,23 @@ class MakeSaleReceiptUI {
                 alignment: Alignment.bottomRight,
                 child: GestureDetector(
                   onTap: () async {
-                    await makeSaleReceiptViewModel.performMakeOfSale(
-                        stockId,
-                        categoryId,
-                        stockName,
-                        txtOrderType.text,
-                        txtOrderDate.text,
-                        txtCustomerName.text,
-                        txtCustomerLocation.text,
-                        txtQuantity.text,
-                        txtBalance.text,
-                        txtAge.text,
-                        txtGender.text);
+                    await makeSaleReceiptViewModel
+                        .performMakeOfSale(
+                            stockId,
+                            categoryId,
+                            stockName,
+                            txtOrderType.text,
+                            txtOrderDate.text,
+                            txtCustomerName.text,
+                            txtCustomerLocation.text,
+                            txtQuantity.text,
+                            txtBalance.text,
+                            txtAge.text,
+                            txtGender.text)
+                        .whenComplete(() {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    });
                   },
                   child: Container(
                     margin: EdgeInsets.all(10),
