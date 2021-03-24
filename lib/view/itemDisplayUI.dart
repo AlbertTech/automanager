@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:automanager/view_models/itemDisplayViewModel.dart';
+import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -162,16 +163,29 @@ class ItemDisplayUI {
               child: Row(
                 children: <Widget>[
                   Container(
-                    width: mediaSize.width * .37,
-                    height: mediaSize.height * .2,
-                    child: Image.asset(
-                      'assets/images/image_add_image.png',
                       width: mediaSize.width * .37,
                       height: mediaSize.height * .2,
-                      filterQuality: FilterQuality.high,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      child: (mySelectedItemValues.length > 0
+                          ? Image(
+                        image: FirebaseImage(mySelectedItemValues[
+                        itemDisplayViewModel.myListIndexStockImage]),
+                        fit: BoxFit.cover,
+                        width: mediaSize.width * .37,
+                        height: mediaSize.height * .2,
+                        filterQuality: FilterQuality.high,
+                        loadingBuilder: (BuildContext context,
+                            Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress != null)
+                            return Center(
+                                child: CircularProgressIndicator());
+                          else
+                            return child;
+                        },
+                      )
+                          : Center(child: Text("No Image"),))),
                   Spacer(),
                   Container(
                     width: mediaSize.width * .37,
@@ -762,6 +776,8 @@ class ItemDisplayUI {
           mySelectedItemValues[itemDisplayViewModel.myListIndexStockPriceEach];
       txtMyStockQuantity.text =
           mySelectedItemValues[itemDisplayViewModel.myListIndexStockQuantity];
+
+
     }
   }
 

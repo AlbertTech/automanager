@@ -13,14 +13,13 @@ class ItemDisplayViewModel {
   Map<String, String> mySuggestions = new Map();
   Map<String, String> myCategoriesOfSuggestions = new Map();
   List<String> mySelectedItemValues = new List();
-  Map<String, dynamic> myDescription = new Map();
+  Map<dynamic, dynamic> myDescription = new Map();
   final int myListIndexStockId = 0,
-      myListIndexCategoryId = 1,
-      myListIndexStockName = 2,
-      myListIndexStockCategory = 3,
-      myListIndexStockQuantity = 4,
-      myListIndexStockPriceEach = 5,
-      myListIndexStockDescription = 6;
+      myListIndexStockName = 1,
+      myListIndexStockCategory = 2,
+      myListIndexStockQuantity = 3,
+      myListIndexStockPriceEach = 4,
+      myListIndexStockImage = 5;
 
   Future<void> searchMyItems(
       TextEditingController mySearch,
@@ -77,13 +76,15 @@ class ItemDisplayViewModel {
       BuildContext ctx) async {
     FocusScope.of(ctx).unfocus();
     print("item selected");
-    print("my suggestions: "+mySuggestions.toString());
+    print("my suggestions: " + mySuggestions.toString());
     if (textValidatorUtility.checkTextIfNotEmptyAndNotNull(mySelectedText) ==
         true)
       sharedPrefUtil.getIsCurrentDatabaseId().then((currentDatabaseId) {
         mySuggestions.forEach((stockId_1, myStockName) {
           if (mySelectedText.toLowerCase() == myStockName.toLowerCase()) {
             print("exact keys and values");
+            print(
+                "categories of suggs: " + myCategoriesOfSuggestions.toString());
             myCategoriesOfSuggestions.forEach((stockId_2, categoryId) async {
               print("doing for each");
               if (stockId_1 == stockId_2) {
@@ -92,18 +93,16 @@ class ItemDisplayViewModel {
                     " " +
                     stockId_2);
                 await itemDisplayModel
-                    .displayItemOnSelection(
-                        stockId_2, currentDatabaseId)
-                    .then((myList) {
-                  if (myList.length > 0) {
-                    print("my list: " + myList[6].toString());
+                    .displayItemOnSelection(stockId_2, currentDatabaseId)
+                    .then((myFoundList) {
+                  if (myFoundList.length > 0) {
+                    print("my list: " + myFoundList.toString());
                     this.mySelectedItemValues.clear();
                     this.myDescription.clear();
                     mySelectedItemValues.clear();
                     myDescriptions.clear();
-                    this
-                        .mySelectedItemValues
-                        .addAll(List<String>.from(myList.sublist(0, 6)));
+                    this.mySelectedItemValues = myFoundList;
+                    myDescription = itemDisplayModel.myDescriptionsFound;
                     updateMySelectedValues(
                         mySelectedItemValues,
                         this.mySelectedItemValues,
@@ -114,6 +113,8 @@ class ItemDisplayViewModel {
                     return;
                   }
                 });
+              } else {
+                print("failed: ");
               }
             });
           }
